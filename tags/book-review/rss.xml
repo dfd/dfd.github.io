@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - book review</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/tags/book-review/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sat, 30 Mar 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Book Review: Probabilistic Machine Learning: An Introduction</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Sat, 30 Mar 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Machine Learning]]></category>
+          
+          
+          <category><![CDATA[book review]]></category>
+          
+          <link>https://dfd.github.io/probabilistic-machine-learning/</link>
+          <guid>https://dfd.github.io/probabilistic-machine-learning/</guid>
+          <description><![CDATA[<p>I'm surprised people aren't making a bigger deal about Kevin Murphy's new textbooks, the first of which I'll review here.</p>
+]]></description>
+          <content:encoded><![CDATA[<p>I'm surprised people aren't making a bigger deal about Kevin Murphy's new textbooks, the first of which I'll review here.</p>
+<span id="continue-reading"></span><h2 id="overview">Overview</h2>
+<p><a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/book1.html">Probabilistic Machine Learning: An Introduction</a> covers an incredible breadth and surprising depth of machine learning and statistics topics.  It can be thought of as a &quot;best of&quot; from <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf">Bishop</a>, <a rel="noopener nofollow noreferrer" target="_blank" href="http://www.inference.org.uk/mackay/itila/">MacKay</a>, <a rel="noopener nofollow noreferrer" target="_blank" href="https://hastie.su.domains/ElemStatLearn/">The Elements of Statistical Learning</a>, and others, along with a view of recent, relevant research, all of which is pulled together under a probabilistic persepctive and consistent notation.  The book is almost entirely self-contained, with an extensive <em>Foundations</em> section covering most prerequisite topics<sup class="footnote-reference"><a href="#prereqs">1</a></sup> before moving on to linear models, deep neural networks, nonparametric models, unsupervised learning, and a few other topics.</p>
+<h2 id="clear-exposition">Clear exposition</h2>
+<p>The book takes a Bayesian view of probability (that we can treat all unknown quantities, such as future outcomes and parameters, as random variables and model them with probability distributions) and applies it to statistical and machine learning models.  In doing so, Murphy is able to apply a consistent framework and common concepts across a very wide range of topics, regardless of how they were originally motivated or conceived.  This approach turns the exploration of various models into a seamless composition of building blocks, rather than a series of jumps between the origin stories of each model. </p>
+<p>Perhaps surprisingly, the book manages to cover the most important<sup class="footnote-reference"><a href="#important">2</a></sup> concepts one would encounter in graduate statistics coursework.  In fact, even after exiting the aforementioned <em>Foundations</em> section, it spends a good chunk of the book on linear models, much of which would overlap with a statistics curriculum.  This is helpful for two reasons:</p>
+<ol>
+<li>First, it's important to apply the right tool for the job.  While complex ML models increasingly do amazing things, there are still many applications and contexts when we need the imposed structure of GLMs and other simpler models.</li>
+<li>More importantly, it introduces the structure of Murphy's approach, which extends naturally from the <em>Foundations</em> section, to relatively simple models before moving on to more complex topics.  This allows the reader to more easily adapt and generalize the framework.</li>
+</ol>
+<p>A common pattern is:</p>
+<ol>
+<li>Motivate  the model and define the likeliihood, such as
+$$
+p(y| \mathbf{x}; \mathbf{\theta}) = \text{Ber}(y|\mathbf{\sigma}(\mathbf{w}^\intercal \mathbf{x} + b))
+$$
+in the case of logistic regression, adding definitions, priors, or nested functions if applicable.</li>
+<li>Define and derive the objective function, such as the negative log likelihood.</li>
+<li>Show how the optimization of this objective is done in practice.</li>
+</ol>
+<p>The book extensively borrows from earlier textbooks and papers for explanations, figures, and problems, always with proper attribution. In fact, it may have the most citations per page I've encountered.  Murphy has meticulously adapted the clearest plots and explanations for each subject and selected problems that provoke deep insights into the material.  Additionally, the extensive use of self-references within the book help to facilitate refreshing an earlier topics as needed.</p>
+<h2 id="practical-theory">Practical theory</h2>
+<p>In practice, I find the the probabilistic perspective to be much more useful than the theory emphasized in some other ML books.  For instance, while I understand the role of <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Vapnik%E2%80%93Chervonenkis_dimension">VC-dimension</a> and <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Probably_approximately_correct_learning">PAC learning</a> in the development of statistical learning theory, I'm rarely utilizing those ideas in applied work.<sup class="footnote-reference"><a href="#SLT">3</a></sup>  Murphy's book explains them in under two pages, while some other books devote entire chapters to each of these concepts.</p>
+<p>Also, as he notes, the probabilistic perspective lends itself to optimal decision making and is shared across science and engineering disciplines, which is what helps fuel the breadth of the two books.</p>
+<h2 id="breadth-and-depth">Breadth and depth</h2>
+<p>Have a look at the <a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/toc1.pdf">table of contents</a>.  I don't know of another textbook that covers linear Gaussian systems, GLMs, and transformers, not to mention Gaussian processes, factorization machines, and graph embeddings (plus the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pml2-book/blob/main/toc2-long-2023-01-19.pdf">even longer sequel book on &quot;advanced topics&quot;</a> <em>and</em> the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pml-book/blob/main/supp2.md">supplemental material</a> to that!).  The power of his approach is that it allows him to write succintly, yet clearly and precisely, on a variety of subjects, adding color and intuition when needed.</p>
+<p>The book delves deeply into the most crucial and fundamental topics, offering detailed proofs and derivations, unveiling important results, and comparing the performance of competing methods across various problems. For example, linear regression methods are thoroughly explored over forty pages. Furthermore, the text dedicates three chapters to deep neural networks, addressing structured data, images, and sequences specifically. In contrast, it touches briefly on many specialized and niche topics, subsequently directing readers to one or more citations for further investigation.</p>
+<h2 id="source-code">Source code</h2>
+<p>While the text focuses on the theory, concepts, and math, Murphy makes available the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pyprobml/tree/master/notebooks/book1">code to reproduce most of the figures</a>.  This often includes experiments and model fitting, for those who want to try out models from the book.  I have not used the code much myself, although I did find <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pyprobml/issues/1113">an issue with the mixture of linear experts code</a>.</p>
+<h2 id="corrections">Corrections</h2>
+<p>I preordered a hard copy of the first printing and, while meticulously working through it, encountered several typos, some even within the mathematical content.  For each typo discovered, I referred to the  <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pml-book/releases/latest/download/book1.pdf">latest draft version</a> to verify if it had already been corrected.  Many had been previously identified and fixed, yet I was still able to report <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pml-book/issues?q=is%3Aissue+author%3Adfd+">several new ones</a>, all of which were subsequently addressed.  Contributing in this way to such an important book was very fulfilling.</p>
+<p>In a weird way, the typos actually enhanced my experience, since catching them was a nice way to validate I understood the material well (your mileage may vary).  Collecting corrections via github probably increased reader participation, and I would assume the current draft is in great shape as a result.</p>
+<h2 id="recommendation">Recommendation</h2>
+<p>Probabilistic Machine Learning is one of two introductory ML textbooks I would recommend.  I think its perspective is the perfect complement to the inductive bias<sup class="footnote-reference"><a href="#inductive">4</a></sup> lens found in Tom Mitchell's classic <a rel="noopener nofollow noreferrer" target="_blank" href="http://www.cs.cmu.edu/~tom/mlbook.html">Machine Learning</a> textbook.</p>
+<p>If you're looking to develop expertise in machine learning, I recommend going through this book cover to cover and attempting each problem provided.  You might not be able to solve them all, so time box each attempt.  You can check <a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/solns-public.pdf">solutions to many of the problems</a>, but give each of them a shot on your own first.</p>
+<p>I was able to move through it relatively quickly, but it helped that I already had graduate degrees focused on statistics and machine learning.<sup class="footnote-reference"><a href="#experience">5</a></sup>  If you find some of your math background is shaky or that the <em>Foundations</em> section is too dense, there are plenty of online resources available to help out.  I particularly like the <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.coursera.org/specializations/mathematics-machine-learning">Mathematics for Machine Learning</a> course from Imperial College London for linear algebra and multivariate calculus.  If you need to supplement with such outside sources, I would still use the structure within PML to guide what specific topics to brush up on, rather than committing to an endless math curriculum before moving on to ML.  This would also be an ideal book for readers with a Bayesian statistics background to dive into machine learning, since they will be familiar with the framing.</p>
+<p>If you find a particular subject interesting, grab the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pyprobml/tree/master/notebooks/book1">associated code</a> and apply it to some new problems or run experiments.  If you feel like you've mastered a chapter of the book, try to generate data sets that deliberately demonstrate the comparative strengths or weaknesses of the models within it.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This has become my go-to reference on ML.  Whenever I encounter a question about ML or need to refresh my memory on a topic, I usually go straight to this book (or <a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/book2.html">its sequel</a>) over google, wikipedia, or other books.</p>
+<p>For a  long time, it's been common for study groups to read through <a rel="noopener nofollow noreferrer" target="_blank" href="https://hastie.su.domains/ElemStatLearn/">ESL</a> together while learning ML.  I think some of its sections are good, but it never appealed to me in the same way and relies too much on null hypothesis testing and p-values for my taste.  <em>Probabilistic Machine Learning</em> now offers a better, modern alternative to cultivate a way of thinking that extends well beyond what many people narrowly think of as &quot;machine learning.&quot;</p>
+<p>The book is <a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/book1.html">freely available online</a>; however, considering its extensive length, opting for a hard copy allows for a much-needed respite from computer screens.  You can <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.amazon.com/Probabilistic-Machine-Learning-Introduction-Computation/dp/0262046822">purchase it here</a>.  And if you want to hear more about the author's perspective, you <a rel="noopener nofollow noreferrer" target="_blank" href="https://learnbayesstats.com/episode/68-probabilistic-machine-learning-generative-models-kevin-murphy/">can listen to a podcast interview here</a>.</p>
+<p>I also have the <a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/book2.html">second book</a>, but haven't yet had time to read it (although I've already used it as a reference on several topics).  Hopefully I will start it later this year.</p>
+<h2 id="footnotes">Footnotes</h2>
+<div class="footnote-definition" id="prereqs"><sup class="footnote-definition-label">1</sup>
+<p>The book assumes knowledge of basic set theory and calculus, and comfort with math notation will help, although there is an appendix for that.  It <em>very briefly</em> covers derivatives and matrix calculus, so that might be challenging for someone new to those subjects.  Integration is not covered within the book, so I think it's fair to say that a reader should know calculus well before starting.</p>
+</div>
+<div class="footnote-definition" id="important"><sup class="footnote-definition-label">2</sup>
+<p>While it briefly describes null hypothesis testing, it does not <a rel="noopener nofollow noreferrer" target="_blank" href="https://speakerdeck.com/rmcelreath/statistical-rethinking-2023-lecture-01?slide=28">devolve into various statistical tests</a>.  I said <em>important</em>, not <em>common</em>.</p>
+</div>
+<div class="footnote-definition" id="SLT"><sup class="footnote-definition-label">3</sup>
+<p>These concepts may help develop an intuition about machine learning, but they are certainly not the concepts I start with when facing a new prediction problem.</p>
+</div>
+<div class="footnote-definition" id="inductive"><sup class="footnote-definition-label">4</sup>
+<p>Inductive bias describes how a learning algorithm conducts its search over a hypothesis space, and can be further broken down into restriction bias (which hypotheses are considered) and preference bias (which hypotheses are preferred) for analysis.  Mitchell's book covers much more than this, of course, but it's the unique aspect I find most useful.</p>
+</div>
+<div class="footnote-definition" id="experience"><sup class="footnote-definition-label">5</sup>
+<p>Even with this background, I still learned quite a bit from the book.</p>
+</div>
+]]></content:encoded>
+      </item>
+      <item>
+          <title>Book Review: Probably Overthinking It</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Sun, 17 Mar 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Statistics]]></category>
+          <category><![CDATA[Causal Inference]]></category>
+          
+          
+          <category><![CDATA[book review]]></category>
+          
+          <link>https://dfd.github.io/probably-overthinking-it/</link>
+          <guid>https://dfd.github.io/probably-overthinking-it/</guid>
+          <description><![CDATA[Overview
+Allen Downey’s Probably Overthinking It describes and resolves a number of statistical fallacies and paradoxes in an accessible way.  The subtitle is How to use data to answer questions, avoid statistical traps, and make better decisions, and an overarching theme is the …]]></description>
+          <content:encoded><![CDATA[<h2 id="overview">Overview</h2>
+<p>Allen Downey’s <a rel="noopener nofollow noreferrer" target="_blank" href="https://greenteapress.com/wp/probably-overthinking-it/">Probably Overthinking It</a> describes and resolves a number of statistical fallacies and paradoxes in an accessible way.  The subtitle is <em>How to use data to answer questions, avoid statistical traps, and make better decisions</em>, and an overarching theme is the various ways sampling bias can impact inference.  He illustrates the issues visually, demonstrates each with multiple examples, and shows adjustments that can overcome and explain them.</p>
+<p>This book is well suited for data scientists, analysts, and mathematically inclined consumers of quantitative analyses.  While a background in probability and statistics would help get more out of the book, it’s not particularly technical; Downey does not dive deeply into the mathematical details, leaving much of the explanation to well designed plots and stories that accompany them.  It’s primarily a book on how to <em>reason</em> about observational data and evaluate models.</p>
+<p>Having read <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/">Downey’s blog</a> (and <a rel="noopener nofollow noreferrer" target="_blank" href="http://allendowney.blogspot.com/">his previous blog</a> before that) for the past 12 years or so, I was familiar with many themes in the book, although some of the examples were new.  Topics include (among others) the <a rel="noopener nofollow noreferrer" target="_blank" href="http://allendowney.blogspot.com/2015/08/the-inspection-paradox-is-everywhere.html">Inspection Paradox</a>, <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2021/04/07/berkson-goes-to-college/">Berkson’s Paradox</a>, <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2021/05/25/in-search-of-simpsons-paradox/">Simpson’s Paradox</a>, and the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/AllenDowney/BiteSizeBayes/blob/master/05_test.ipynb">base rate fallacy</a>.</p>
+<h2 id="what-makes-the-book-unique">What makes the book unique</h2>
+<p>One thing I like about the book is its emphasis on choosing appropriate probability distributions and plotting methods.  Students tend to come out of university statistics courses overemphasizing the Gaussian distribution, and a big lesson from this book is that the choice of distribution can matter a lot to a model’s quality and the decisions it informs. He also explains circumstances under which the Gaussian distribution <em>is</em> an appropriate choice and how to compare the fit of different modeling distributions.  He does quite a bit of modeling with the log-normal distribution, which I've used extensively in industry, and even the log-t distribution, which I've also applied in practice. </p>
+<p>The book also focuses on comparing model predictions to observable data, rather than on parameters, standard errors, or hypothesis tests.  This is done with widespread use of ECDFs and <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2022/10/03/the-long-tail-of-disaster/">log-log complementary CDFs when we want to emphasize tail behavior</a> (these are <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.cs.cmu.edu/~christos/courses/826-resources/PAPERS+BOOK/0412004-newman05.pdf">widely used for power law distributions</a>, often found in networks).  It also touches on survival analysis, which many analysts and data scientists don’t seem to encounter in school.</p>
+<h2 id="most-interesting-chapters">Most interesting chapters</h2>
+<p>Perhaps the most interesting topic is Berkson’s Paradox, for which the following example is given:</p>
+<ul>
+<li>Babies of mothers who smoked were about 6% lighter at birth</li>
+<li>Smokers were about twice as likely to have babies lighter than 2,500 grams, which is considered “low birthweight”</li>
+<li>Low-birthweight babies were much more likely to die within a month of birth</li>
+<li>But the mortality rate of low-birthweight babies of smokers was lower than that of non-smokers</li>
+</ul>
+<p>This led some to conclude that smoking was protective for low-birthweight babies.  I won't spoil the solution here, but he posted <a rel="noopener nofollow noreferrer" target="_blank" href="https://docs.google.com/presentation/d/e/2PACX-1vRfp93z9-0v4d4xbhw73zgBO-oz0QMguXrBCUI3JQsmpv2RzUDlClyRS2kZMy-EMZTCYI-38HNMrPSP/pub?start=false&amp;loop=false&amp;delayms=3000">some slides on the subject</a>.  The chapter also introduces causal diagrams, but they are only covered to the extent needed by the chapter.</p>
+<p>Another chapter I particularly enjoyed was <em>Chasing the Overton Window</em>, where he explains the following phenomena:</p>
+<ul>
+<li>People are more likely to identify as conservative as they get older.</li>
+<li>Order people hold more conservative views, on average.</li>
+<li>However, as people get older, their views do not become more conservative.</li>
+</ul>
+<p>Again, I won't spoil it, but you can see <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2023/04/24/the-overton-paradox/">some of his analysis here</a> and <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2022/11/09/chasing-the-overton-window/">watch a talk on it here</a>.</p>
+<p>Although Downey is a <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2021/05/07/founded-upon-an-error/">card-carrying Bayesian</a>, the book doesn't emphasize Bayesian analysis, beyond the chapter on the base rate fallacy, which uses the <a rel="noopener nofollow noreferrer" target="_blank" href="https://allendowney.github.io/BiteSizeBayes/05_test.html">uncontroversial application of Bayes rule to diagnostic tests</a>, although I don't recall seeing the word &quot;Bayes&quot; at all.  An important point he makes is that information available before the test is important to establishing the relevant base rate, e.g. random screening implies a different base rate for a disease than someone being tested because of symptoms.  He then moves on to applying base rates to the <a rel="noopener nofollow noreferrer" target="_blank" href="https://arxiv.org/abs/1707.01195">fairness impossibility theorem</a>.</p>
+<p>Another interesting chapter I'll mention was about the inspection paradox.  He gives several examples, but the most illustrative is about running a distance race.  A given runner will observe more runners who are either significantly faster or slower than themselves, but almost none who are running at about the same pace.  Not only does Downey do a nice job explaining why this occurs, but also shows how to adjust for the sampling bias that leads to the paradox.  You can see a <a rel="noopener nofollow noreferrer" target="_blank" href="http://allendowney.blogspot.com/2015/08/the-inspection-paradox-is-everywhere.html">version of the analysis here</a>.</p>
+<h2 id="expanding-on-chapter-1">Expanding on Chapter 1</h2>
+<p>The basic premise of chapter 1 is that no one is “normal” (defined as being within 0.3 standard deviations of the average) with respect to even a modest number of bodily measurements or personality traits.  He shows through a couple of examples that very few people are &quot;normal&quot; on numerous metrics.  One specific example uses the Big Five personality traits, which we are told are roughly independent, and pretty well approximated by Gaussian distributions.  For each trait, he defines normal as being in the middle 20-28% of the distribution.</p>
+<p>He then presents data on the traits and normality within them and in combinations.  I'm combining some information from two tables here to show the percentage who are considered &quot;normal&quot; for each trait, followed by the counts and percentage of the total people who make it through each successive &quot;normal&quot; filter.</p>
+<table><thead><tr><th><strong>Trait</strong></th><th style="text-align: right"><strong>Pct &quot;Normal&quot;</strong></th><th style="text-align: right"><strong>Count</strong></th><th style="text-align: right"><strong>Pct Remain</strong></th></tr></thead><tbody>
+<tr><td>Extroversion</td><td style="text-align: right">23.4</td><td style="text-align: right">204,077</td><td style="text-align: right">23.4</td></tr>
+<tr><td>Emotional stability</td><td style="text-align: right">20.9</td><td style="text-align: right">46,988</td><td style="text-align: right">5.4</td></tr>
+<tr><td>Conscientiousness</td><td style="text-align: right">20.2</td><td style="text-align: right">10,976</td><td style="text-align: right">1.3</td></tr>
+<tr><td>Agreeableness</td><td style="text-align: right">21.1</td><td style="text-align: right">2,981</td><td style="text-align: right">0.3</td></tr>
+<tr><td>Openness</td><td style="text-align: right">28.3</td><td style="text-align: right">926</td><td style="text-align: right">0.1</td></tr>
+</tbody></table>
+<p>In other words, only 0.1% of those in the sample data are in a &quot;normal&quot; range in each trait.  There are at least two ways to explain why this is an expected result.</p>
+<p>The first is <a rel="noopener nofollow noreferrer" target="_blank" href="https://juanitorduz.github.io/exploring-the-curse-of-dimensionality-part-ii./">the curse of dimensionality</a>, which offers a geometric explanation for this.  Suppose each of $d$ traits were an independent standard Gaussian distribution.  The mean squared distance from the origin for points in the distribution is $d$, which follows from the <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Chi-squared_distribution">chi-squared distribution</a>.  In other words, the more independent traits we add, the further from the mean we expect a sampled point in the distribution to be.  And more to the point, as $d$ grows, the probability increases that at least one of the draws from the independent Gaussian traits will be far away from the mean.</p>
+<p>From a geometric point of view, if a point is far from the mean in any dimension, then we would say it is on the &quot;edge&quot; of the distribution.  The curse of dimensionality tells us that as $d$ grows large, eventually most of our data will be found on the edge of the data set, i.e. a value in at least one dimension for each point will be far from the mean (not &quot;normal&quot; aka &quot;weird&quot;).  And with enough dimensions, all data will be at an edge in approximately the same number of attributes.  Downey alludes to this idea when he writes, &quot;In the limit, if we consider the nearly infinite ways people vary, we find we are all equally weird,&quot; but without naming the concept directly.  So there may have been an opportunity to connect the chapter 1 lesson back to a more broadly applicable concept that readers may have heard about in other contexts of statistics or machine learning. See <a rel="noopener nofollow noreferrer" target="_blank" href="https://hastie.su.domains/ElemStatLearn/">section 2.5 of Elements of Statistical Learning</a> for more on the idea.</p>
+<p>A simpler reason this result is expected is that if you multiply roughly independent probabilities between 0.2 and 0.3, you can get a small probability quickly.  And the product gets smaller faster when the events are independent.  For instance, suppose we treat each of those percent normal for each trait as probabilities of independent events and just multiply them.  We would get the results in the far right of the following table, which isn't too much different from the actual results.</p>
+<table><thead><tr><th><strong>Trait</strong></th><th style="text-align: right"><strong>Pct &quot;Normal&quot;</strong></th><th style="text-align: right"><strong>Pct Remain</strong></th><th style="text-align: right"><strong>Pct if ⫫</strong></th></tr></thead><tbody>
+<tr><td>Extroversion</td><td style="text-align: right">23.4</td><td style="text-align: right">23.4</td><td style="text-align: right">23.4</td></tr>
+<tr><td>Emotional stability</td><td style="text-align: right">20.9</td><td style="text-align: right">5.4</td><td style="text-align: right">4.9</td></tr>
+<tr><td>Conscientiousness</td><td style="text-align: right">20.2</td><td style="text-align: right">1.3</td><td style="text-align: right">1.0</td></tr>
+<tr><td>Agreeableness</td><td style="text-align: right">21.1</td><td style="text-align: right">0.3</td><td style="text-align: right">0.2</td></tr>
+<tr><td>Openness</td><td style="text-align: right">28.3</td><td style="text-align: right">0.1</td><td style="text-align: right">0.1</td></tr>
+</tbody></table>
+<p>Notice this result does not have anything to do with being &quot;normal&quot; or any concept of distance at all.  We could have been talking about the probabilities of being in the farthest left portions of the trait distributions, or simply assigned the probabilities to a set of independent Bernoulli trials.  To simplify further, let's suppose the probability of being &quot;normal&quot; for any trait is $p$.  Then the probability that an instance is normal in all $d$ independent traits is just $p^d$, which will become very small as $d$ grows large, if $p \lt 1$.  Here, we can get roughly the same result by setting $p=0.234$ for each of 5 indepdent traits.</p>
+<h2 id="verdict">Verdict</h2>
+<p>Overall, I recommend this book to producers and consumers of data analysis to learn a useful set of concepts through examples.  At the very least, readers will learn to ask good questions with respect to common issues in observational data analysis, and readers with the right background may learn some new methods to apply.  While it eschews the technical density of a textbook, it demands more intellectual engagement than a typical pop science book, drawing readers in with its broad scope of topics and colorful storytelling.</p>
+<p>All the notebooks used to generate the analyses and plots are <a rel="noopener nofollow noreferrer" target="_blank" href="https://allendowney.github.io/ProbablyOverthinkingIt/intro.html">available here</a>, which can aid practitioners looking to apply the lessons to their own work.  You can <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.amazon.com/Probably-Overthinking-Questions-Statistical-Decisions/dp/0226822583">buy the book here</a>, and he also has a number of high quality technical books <a rel="noopener nofollow noreferrer" target="_blank" href="https://greenteapress.com/wp/">available for free here</a>.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 
