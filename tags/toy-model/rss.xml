@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - toy model</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/tags/toy-model/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 20 Oct 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Can Primary Elections Cause Polarization?  A Toy Model</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Political Science]]></category>
+          
+          
+          <category><![CDATA[voting]]></category>
+          <category><![CDATA[toy model]]></category>
+          
+          <link>https://dfd.github.io/primaries-polarization/</link>
+          <guid>https://dfd.github.io/primaries-polarization/</guid>
+          <description><![CDATA[Introduction
+There has been much speculation that Americans have become more politically polarized in recent years.  But the evidence seems to point to political parties become more polarized rather than the population itself.  In other words, there is more ideoleogical sorting i…]]></description>
+          <content:encoded><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>There has been much speculation that Americans have become more politically polarized in recent years.  But the evidence seems to point to political parties become more polarized rather than the population itself.  In other words, there is more ideoleogical sorting in party membership than before.  <a rel="noopener nofollow noreferrer" target="_blank" href="https://statmodeling.stat.columbia.edu/2024/10/15/things-are-getting-so-politically-polarized-we-cant-measure-how-politically-polarized-things-are-getting/">Andrew Gelman recently blogged about this</a> (citing a <a rel="noopener nofollow noreferrer" target="_blank" href="https://madeinamericathebook.wordpress.com/2024/06/20/things-are-getting-so-politically-polarized-we-cant-measure-how-politically-polarized-things-are-getting/">post by Claude Fischer</a>), and I agree with his observation that it seems like people tend to cast votes more against the other side than for their own these days.</p>
+<p>Allen Downey <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2022/09/11/polarization-and-partisan-sorting/">looked at survey results a couple of years ago and came to a similar conclusion</a>.  He also points out that &quot;the percentage of Nonpartisans has increased to the point where they are now the plurality.&quot;</p>
+<p>In this post, I will present a toy model that extends the median voter theorem to show how primary presidential elections might lead to these results.  To be clear, I will prove nothing here.  I won't even try to fit a model to empirical data.  This is more in the spirit of <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Schelling%27s_model_of_segregation">Schelling's segregation model</a>, which showed how slight in-group preferences could lead to highly segregated housing.  He never claimed this was the only cause or even the primary cause of observed, real-life segregation; merely that it was a plausible mechanism through which housing segregation could occur.  Similarly, I'll just try to give an intuition of how primary elections might lead to political polarization and growing independents under some assumptions.</p>
+<h2 id="the-median-voter-theorem-and-hotelling-s-law">The median voter theorem and Hotelling's law</h2>
+<p><a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Median_voter_theorem">The median voter theorem</a> supposes that voters have preferences along a one-dimensional spectrum and that voters cast votes for the candidate closest to their position, and then states voters will elect the candidate whose position is closest to the median voter.  I'm also supposing <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Hotelling%27s_law#Political_science">Hotelling's law</a> behavior, whereby politicians will position themselves at the median to win elections. I'm simplifying a bit, but that's a good enough intuition in a &quot;one person, one vote&quot; system.</p>
+<figure class="image">
+  <img src="Median_voter.png">
+  <figcaption>An illustration of the median voter theorem.<br>Attribution:
+  <a href="https://commons.wikimedia.org/wiki/File:Median_voter.png">Colin.champion</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>, via Wikimedia Commons
+</figcaption>
+</figure>
+<h2 id="extension-and-repetition">Extension and repetition</h2>
+<p>In this post, I will suppose the following:</p>
+<ul>
+<li>Political positions of the electorate are well described by a Gaussian distribution</li>
+<li>The winning candidate of party's primary positions his or herself at the median vote of that party</li>
+<li>Voters use presidential nominees as flagpoles of each party's position</li>
+<li>Voters estimate the midpoint between flagpoles of each party, and this midpoint become the flagpole for independents</li>
+<li>Voters then categorize themselves according to the flagpole that is closest to them</li>
+</ul>
+<p>In other words, this model represents people choosing to affiliate with whatever is closest to their views: one of two parties or the midpoint between them.</p>
+<p>We will develop a toy model for this, and see how it leads to growing polarization between parties and a growing number of independents over time.</p>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#f92672dd;">import </span><span>numpy </span><span style="color:#cc7833;">as </span><span>np
+</span><span style="color:#f92672dd;">import </span><span>matplotlib.pyplot </span><span style="color:#cc7833;">as </span><span>plt
+</span><span>
+</span><span style="color:#95815e;"># generate first voters, who each belong to a party to start
+</span><span>np.random.seed(</span><span style="color:#a5c261;">3</span><span>)
+</span><span>party1 </span><span style="color:#cc7833;">= </span><span>np.random.normal(</span><span style="color:#a5c261;">0</span><span>, </span><span style="color:#a5c261;">1</span><span>, </span><span style="font-style:italic;color:#fd971f;">size</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">500</span><span>)
+</span><span>party2 </span><span style="color:#cc7833;">= </span><span>np.random.normal(</span><span style="color:#a5c261;">0</span><span>, </span><span style="color:#a5c261;">1</span><span>, </span><span style="font-style:italic;color:#fd971f;">size</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">500</span><span>)
+</span><span>
+</span><span>all_voters </span><span style="color:#cc7833;">= </span><span>np.hstack([party1, party2])
+</span><span>
+</span><span>party1_flagpole </span><span style="color:#cc7833;">= </span><span>np.median(party1)
+</span><span>party2_flagpole </span><span style="color:#cc7833;">= </span><span>np.median(party2)
+</span><span>independent_flagpole </span><span style="color:#cc7833;">= </span><span>(party1_flagpole </span><span style="color:#cc7833;">+ </span><span>party2_flagpole)</span><span style="color:#cc7833;">/</span><span style="color:#a5c261;">2
+</span><span>
+</span><span>party_array </span><span style="color:#cc7833;">= </span><span>np.array([independent_flagpole, party1_flagpole, party2_flagpole])
+</span></code></pre>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span>rounds </span><span style="color:#cc7833;">= </span><span style="color:#a5c261;">7
+</span><span>results </span><span style="color:#cc7833;">= </span><span>np.empty((rounds, </span><span style="color:#da4939;">len</span><span>(all_voters)))
+</span><span>flagpoles </span><span style="color:#cc7833;">= </span><span>np.empty((rounds, </span><span style="color:#a5c261;">3</span><span>))
+</span><span style="color:#cc7833;">for </span><span>i </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(rounds):
+</span><span>    flagpoles[i, :] </span><span style="color:#cc7833;">= </span><span>party_array
+</span><span>    closest_indices </span><span style="color:#cc7833;">= </span><span>np.abs(all_voters[:, np.newaxis] </span><span style="color:#cc7833;">- </span><span>party_array).argmin(</span><span style="font-style:italic;color:#fd971f;">axis</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">1</span><span>)
+</span><span>    results[i, :] </span><span style="color:#cc7833;">= </span><span>closest_indices
+</span><span>    </span><span style="color:#95815e;"># now group into new parties
+</span><span>    party1 </span><span style="color:#cc7833;">= </span><span>all_voters[closest_indices</span><span style="color:#cc7833;">==</span><span style="color:#a5c261;">1</span><span>]
+</span><span>    party2 </span><span style="color:#cc7833;">= </span><span>all_voters[closest_indices</span><span style="color:#cc7833;">==</span><span style="color:#a5c261;">2</span><span>]
+</span><span>
+</span><span>    party1_flagpole </span><span style="color:#cc7833;">= </span><span>np.median(party1)
+</span><span>    party2_flagpole </span><span style="color:#cc7833;">= </span><span>np.median(party2)
+</span><span>    independent_flagpole </span><span style="color:#cc7833;">= </span><span>(party1_flagpole </span><span style="color:#cc7833;">+ </span><span>party2_flagpole)</span><span style="color:#cc7833;">/</span><span style="color:#a5c261;">2
+</span><span>    party_array </span><span style="color:#cc7833;">= </span><span>np.array([independent_flagpole, party1_flagpole, party2_flagpole])
+</span><span>    
+</span></code></pre>
+<p>We can look at party membership over time</p>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span>plt.plot((results</span><span style="color:#cc7833;">==</span><span style="color:#a5c261;">0</span><span>).sum(</span><span style="font-style:italic;color:#fd971f;">axis</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">1</span><span>), </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;Independents&#39;</span><span>)
+</span><span>plt.plot((results</span><span style="color:#cc7833;">==</span><span style="color:#a5c261;">1</span><span>).sum(</span><span style="font-style:italic;color:#fd971f;">axis</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">1</span><span>), </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;Party 1&#39;</span><span>)
+</span><span>plt.plot((results</span><span style="color:#cc7833;">==</span><span style="color:#a5c261;">2</span><span>).sum(</span><span style="font-style:italic;color:#fd971f;">axis</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">1</span><span>), </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;Party 2&#39;</span><span>)
+</span><span>plt.xticks(</span><span style="font-style:italic;color:#fd971f;">ticks</span><span style="color:#cc7833;">=</span><span style="color:#da4939;">range</span><span>(results.shape[</span><span style="color:#a5c261;">0</span><span>]), </span><span style="font-style:italic;color:#fd971f;">labels</span><span style="color:#cc7833;">=</span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">1</span><span>, results.shape[</span><span style="color:#a5c261;">0</span><span>] </span><span style="color:#cc7833;">+ </span><span style="color:#a5c261;">1</span><span>))
+</span><span>plt.legend()
+</span><span>plt.gca().set_ylabel(</span><span style="color:#a5c261;">&#39;Voter Counts&#39;</span><span>)
+</span><span>plt.gca().set_xlabel(</span><span style="color:#a5c261;">&#39;Election Number&#39;</span><span>)
+</span><span>plt.show();
+</span></code></pre>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_9_0.png" alt="png" /></p>
+<p>And look at the flagpole positions over time.</p>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span>plt.plot(flagpoles)
+</span><span>plt.gca().set_ylabel(</span><span style="color:#a5c261;">&#39;Flagpole position&#39;</span><span>)
+</span><span>plt.gca().set_xlabel(</span><span style="color:#a5c261;">&#39;Election Number&#39;</span><span>)
+</span><span>plt.xticks(</span><span style="font-style:italic;color:#fd971f;">ticks</span><span style="color:#cc7833;">=</span><span style="color:#da4939;">range</span><span>(results.shape[</span><span style="color:#a5c261;">0</span><span>]), </span><span style="font-style:italic;color:#fd971f;">labels</span><span style="color:#cc7833;">=</span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">1</span><span>, results.shape[</span><span style="color:#a5c261;">0</span><span>] </span><span style="color:#cc7833;">+ </span><span style="color:#a5c261;">1</span><span>)) 
+</span><span>plt.show();
+</span></code></pre>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_11_0.png" alt="png" /></p>
+<p>Let's look at how it evolves over time with voters and their relative positions.</p>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span>party_colors </span><span style="color:#cc7833;">= </span><span>[</span><span style="color:#a5c261;">&#39;C0&#39;</span><span>, </span><span style="color:#a5c261;">&#39;C1&#39;</span><span>, </span><span style="color:#a5c261;">&#39;C2&#39;</span><span>]
+</span><span>party_names </span><span style="color:#cc7833;">= </span><span>[</span><span style="color:#a5c261;">&#39;Independents&#39;</span><span>, </span><span style="color:#a5c261;">&#39;Party 1&#39;</span><span>, </span><span style="color:#a5c261;">&#39;Party 2&#39;</span><span>]
+</span></code></pre>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#cc7833;">for </span><span>round_idx </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(rounds):
+</span><span>    plt.figure(</span><span style="font-style:italic;color:#fd971f;">figsize</span><span style="color:#cc7833;">=</span><span>(</span><span style="color:#a5c261;">8</span><span>, </span><span style="color:#a5c261;">2</span><span>))
+</span><span>
+</span><span>    </span><span style="color:#cc7833;">for </span><span>party </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">3</span><span>):
+</span><span>        party_voters </span><span style="color:#cc7833;">= </span><span>all_voters[results[round_idx] </span><span style="color:#cc7833;">== </span><span>party]
+</span><span>        plt.scatter(
+</span><span>            party_voters,
+</span><span>            np.zeros_like(party_voters),
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">color</span><span style="color:#cc7833;">=</span><span>party_colors[party],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">marker</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;|&#39;</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">s</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">100</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span>party_names[party],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">alpha</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">0.2</span><span>,
+</span><span>        )
+</span><span>
+</span><span>    </span><span style="color:#cc7833;">for </span><span>party </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">3</span><span>):
+</span><span>        flagpole_pos </span><span style="color:#cc7833;">= </span><span>flagpoles[round_idx, party]
+</span><span>        plt.plot(
+</span><span>            [flagpole_pos, flagpole_pos],
+</span><span>            [</span><span style="color:#a5c261;">0</span><span>, </span><span style="color:#a5c261;">0.2</span><span>],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">color</span><span style="color:#cc7833;">=</span><span>party_colors[party],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">linestyle</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;-&#39;</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">linewidth</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">2</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span style="color:#c1be91;">&quot;_nolegend_&quot;</span><span>,
+</span><span>        )
+</span><span>
+</span><span>    plt.title(</span><span style="font-style:italic;color:#6e9cbe;">f</span><span style="color:#a5c261;">&#39;Round </span><span>{round_idx </span><span style="color:#cc7833;">+ </span><span style="color:#a5c261;">1</span><span>}</span><span style="color:#a5c261;">&#39;</span><span>)
+</span><span>    plt.gca().set_xlabel(</span><span style="color:#a5c261;">&#39;Political Position&#39;</span><span>)
+</span><span>    plt.yticks([])
+</span><span>    plt.legend()
+</span><span>
+</span><span>    plt.show()
+</span><span>
+</span></code></pre>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_0.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_1.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_2.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_3.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_4.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_5.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_6.png" alt="png" /></p>
+<p>Now instead of showing it by political position on the x-axis, let's give each voter equal width on the x-axis to better show how the proportions change.  We'll align the flagpoles with the closest voter.</p>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#cc7833;">for </span><span>round_idx </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(rounds):
+</span><span>    plt.figure(</span><span style="font-style:italic;color:#fd971f;">figsize</span><span style="color:#cc7833;">=</span><span>(</span><span style="color:#a5c261;">8</span><span>, </span><span style="color:#a5c261;">2</span><span>))
+</span><span>
+</span><span>    </span><span style="color:#95815e;"># voter positions and the corresponding party votes for this round
+</span><span>    voters_positions </span><span style="color:#cc7833;">= </span><span>all_voters
+</span><span>    parties </span><span style="color:#cc7833;">= </span><span>results[round_idx] 
+</span><span>
+</span><span>    </span><span style="color:#95815e;"># sort voters and their corresponding party by their position
+</span><span>    sorted_indices </span><span style="color:#cc7833;">= </span><span>np.argsort(voters_positions)
+</span><span>    sorted_voters </span><span style="color:#cc7833;">= </span><span>voters_positions[sorted_indices]
+</span><span>    sorted_parties </span><span style="color:#cc7833;">= </span><span>parties[sorted_indices].astype(</span><span style="font-style:italic;color:#6e9cbe;">int</span><span>)
+</span><span>
+</span><span>    </span><span style="color:#95815e;"># generate evenly spaced x-values for the voters, from 0 to 1
+</span><span>    x_values </span><span style="color:#cc7833;">= </span><span>np.linspace(</span><span style="color:#a5c261;">0</span><span>, </span><span style="color:#a5c261;">1</span><span>, </span><span style="color:#da4939;">len</span><span>(sorted_voters))
+</span><span>
+</span><span>    
+</span><span>    </span><span style="color:#cc7833;">for </span><span>i </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(</span><span style="color:#da4939;">len</span><span>(sorted_voters) </span><span style="color:#cc7833;">- </span><span style="color:#a5c261;">1</span><span>):
+</span><span>        plt.plot(
+</span><span>            x_values[i:i </span><span style="color:#cc7833;">+ </span><span style="color:#a5c261;">2</span><span>], [</span><span style="color:#a5c261;">0</span><span>, </span><span style="color:#a5c261;">0</span><span>],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">color</span><span style="color:#cc7833;">=</span><span>party_colors[sorted_parties[i]],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">lw</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">2</span><span>, </span><span style="font-style:italic;color:#fd971f;">alpha</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">0.2
+</span><span>        )
+</span><span>
+</span><span>    </span><span style="color:#95815e;"># flagpoles
+</span><span>    </span><span style="color:#cc7833;">for </span><span>party </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">3</span><span>):
+</span><span>        flagpole_pos </span><span style="color:#cc7833;">= </span><span>flagpoles[round_idx, party]
+</span><span>        nearest_voter_idx </span><span style="color:#cc7833;">= </span><span>np.abs(sorted_voters </span><span style="color:#cc7833;">- </span><span>flagpole_pos).argmin()
+</span><span>        nearest_voter_x </span><span style="color:#cc7833;">= </span><span>x_values[nearest_voter_idx]
+</span><span>
+</span><span>        plt.axvline(
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">x</span><span style="color:#cc7833;">=</span><span>nearest_voter_x,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">color</span><span style="color:#cc7833;">=</span><span>party_colors[party],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">linestyle</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;--&#39;</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">linewidth</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">2</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span style="color:#c1be91;">&quot;_nolegend_&quot; 
+</span><span>        )
+</span><span>
+</span><span>    </span><span style="color:#cc7833;">for </span><span>party </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">3</span><span>):
+</span><span>        plt.plot([], [], </span><span style="font-style:italic;color:#fd971f;">color</span><span style="color:#cc7833;">=</span><span>party_colors[party], </span><span style="font-style:italic;color:#fd971f;">lw</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">2</span><span>, </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span>party_names[party])
+</span><span>
+</span><span>    plt.title(</span><span style="font-style:italic;color:#6e9cbe;">f</span><span style="color:#a5c261;">&#39;Round </span><span>{round_idx </span><span style="color:#cc7833;">+ </span><span style="color:#a5c261;">1</span><span>}</span><span style="color:#a5c261;">&#39;</span><span>)
+</span><span>    plt.gca().set_xlabel(</span><span style="color:#a5c261;">&#39;Voter Rank (Equal Spacing)&#39;</span><span>)
+</span><span>    plt.yticks([])  </span><span style="color:#95815e;"># Remove y-axis
+</span><span>
+</span><span>    plt.legend(</span><span style="font-style:italic;color:#fd971f;">loc</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;upper right&#39;</span><span>)
+</span><span>
+</span><span>    plt.show()
+</span></code></pre>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_0.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_1.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_2.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_3.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_4.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_5.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_6.png" alt="png" /></p>
+<p>So that illustrates the intuition behind this toy model, how it could lead to political polarization between parties and growth in independents.  However, one might notice that most of the polarization happened quite quickly toward the beginning (this is in part because I started independents as such a small group).</p>
+<p>One could imagine extending this model such that affiliation switching is done with a lag as voters wonder, &quot;has my party really left me?&quot; and verify over several cycles that they are now closer to the center than to their party.  Or perhaps switching could be done probabilistically according to a function of how far the party has drifted from them and over how many cycles.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>So, what have we proved?  Nothing.  As mentioned up top, this is just a toy model and there are other plausible causes of party polarization.  But I encourage you to go look at Allen Downey's <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2022/09/11/polarization-and-partisan-sorting/">post on the topic</a>, where we can see that this move toward modern polarization took place shortly after <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/United_States_presidential_primary#National_binding_primary_era_(1972%E2%80%93present)">national binding primary era started in 1972</a>.  In the absence of primaries, <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Median_voter_theorem#Hotelling-Downs_median_voter_model">Hotelling's law suggests</a> political parties would be more focused on nominating candidates positioned toward the median of the general electorate (or at least of the swing states), rather than the median of their own party.  Hopefully this post gives some intuition as to how such polarization might arise under a few simplifying assumptions about party primaries and affiliation.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 
