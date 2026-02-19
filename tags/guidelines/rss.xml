@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - guidelines</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/tags/guidelines/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sat, 01 Mar 2025 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Blog Guidelines on Naming Names</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Sat, 01 Mar 2025 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Site]]></category>
+          
+          
+          <category><![CDATA[guidelines]]></category>
+          
+          <link>https://dfd.github.io/guidelines-on-naming-names/</link>
+          <guid>https://dfd.github.io/guidelines-on-naming-names/</guid>
+          <description><![CDATA[I occasionally read items that inspire ideas for blog posts.  Sometimes they are items I disagree with, and sometimes those items are behind logins.  I also want to avoid strawman arugments, so I'll want to link to examples of what I'm referring to.
+In these situations, the guide…]]></description>
+          <content:encoded><![CDATA[<p>I occasionally read items that inspire ideas for blog posts.  Sometimes they are items I disagree with, and sometimes those items are behind logins.  I also want to avoid strawman arugments, so I'll want to link to examples of what I'm referring to.</p>
+<p>In these situations, the guideline I plan to follow is to not name the author of the post which I am critical of, unless that person is otherwise somewhat famous in their field (e.g. the author of a book).</p>
+<p>In any case, when I am critiquing someone's ideas, I never intend to imply anything negative about them as a person, scholar, or employee, unless explicitly stated.  Usually in these cases, the person has simply posted an example of the type of thinking I disagree with.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 
