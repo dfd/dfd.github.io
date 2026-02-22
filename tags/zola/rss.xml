@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - zola</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/tags/zola/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Tue, 27 Feb 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Changing Zola&#x27;s Content Structure</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Tue, 27 Feb 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Development]]></category>
+          
+          
+          <category><![CDATA[zola]]></category>
+          
+          <link>https://dfd.github.io/changing-zola-structure/</link>
+          <guid>https://dfd.github.io/changing-zola-structure/</guid>
+          <description><![CDATA[<p>A note for my future self on how to edit the Zola content structure.</p>
+]]></description>
+          <content:encoded><![CDATA[<p>A note for my future self on how to edit the Zola content structure.</p>
+<span id="continue-reading"></span>
+<p>This wasn't that hard, but in case I want to do it again, I'll leave a note here about how I changed the Zola content structure for this blog.</p>
+<p>I was originally using the structure from <a rel="noopener nofollow noreferrer" target="_blank" href="https://deepthought-theme.netlify.app/docs/">Deep Thought</a>, but decided that I wanted the posts to show up at the root, with the former home page in an <code>About</code> section.   To do this, I had to switch the <code>index.html</code> with the <code>section.html</code> in <code>templates</code>.  Then in the <code>content</code> directory, I created an <code>about</code> directory, and dropped the original <code>_index.md</code> there, then I dumped the files from the <code>posts</code> directory in the root directory.  Then I had to edit the <code>navbar_items</code> in the <code>config.toml</code> to map the section names to their new locations.  The last part, which I didn't realize until I previewed the deployment, was that I needed to change the <code>avatar</code> from <code>config.toml</code> from <code>images/avatar.png</code> to <code>/images/avatar.png</code>.</p>
+]]></content:encoded>
+      </item>
+      <item>
+          <title>Creating this blog</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Wed, 27 Dec 2023 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Development]]></category>
+          
+          
+          <category><![CDATA[zola]]></category>
+          <category><![CDATA[front end]]></category>
+          
+          <link>https://dfd.github.io/creating-this-blog/</link>
+          <guid>https://dfd.github.io/creating-this-blog/</guid>
+          <description><![CDATA[<p>As is tradition, I will use the first post of my new blog to briefly describe how I set it up.</p>
+]]></description>
+          <content:encoded><![CDATA[<p>As is tradition, I will use the first post of my new blog to briefly describe how I set it up.</p>
+<span id="continue-reading"></span><h2 id="choosing-a-framework-and-theme">Choosing a framework and theme</h2>
+<p>Since I'm planning to make 2024 <em>the year of Rust</em>, I wanted to use a static site generator written in Rust, and <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.getzola.org/">Zola</a> seemed to be the best choice.  I wanted to find a theme that used the CSS framework <a rel="noopener nofollow noreferrer" target="_blank" href="https://bulma.io/">Bulma</a>, which offers the right level of customization for something like this.  I found <a rel="noopener nofollow noreferrer" target="_blank" href="https://deepthought-theme.netlify.app/docs/">DeepThought</a>, which had the high level features I wanted and seemed well-organized.  However, I thought the design was a little too busy; I wanted a simpler, flatter style, so I started hacking away at the sass/css and <a rel="noopener nofollow noreferrer" target="_blank" href="https://keats.github.io/tera/docs/">Tera templates</a> until I got something I liked well enough.</p>
+<p>The templates were relatively easy to understand; they're very similar to <a rel="noopener nofollow noreferrer" target="_blank" href="https://palletsprojects.com/p/jinja/">jinja templates</a> in Python.  I hadn't worked with <a rel="noopener nofollow noreferrer" target="_blank" href="https://sass-lang.com/">sass</a> before, so that took some exploration and consultation with ChatGPT at times.</p>
+<p>It was mostly a good experience, although I think there may be an <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/getzola/zola/issues/2393">issue</a> with next/previous page directions in Zola.</p>
+<h2 id="styling">Styling</h2>
+<p>I got rid of the 3D box shadows on each post, instead adding a backlight effect to each flat item on <code>hover</code>.  I went with a grayscale palette with just a couple of colors, adding a brown for icons and table of contents highlighting to complement the dark blue used for links.  Adobe offers a <a rel="noopener nofollow noreferrer" target="_blank" href="https://color.adobe.com/create/color-wheel">nice tool for selecting color palettes</a>.  The framework by default includes a search function, but since it's a static site, this is done by pushing a large javascript file with all the sites indexed content to the browser.  That seemed heavy, and google site searches are probably good enough.  Fully removing it was not as easy as just setting the <code>build_search_index = false</code> however; the search icon was hard coded into the navbar within the <code>base.html</code> template.  So I had to remove that, but doing so broke the <code>site.js</code> including the dark mode toggle.  So I had to remove all the javascript related to search before it worked properly.</p>
+<p>One issue I couldn't figure out was how to get the DeepThought <code>navbar</code> to have a fixed position at the top.  As I described in <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/RatanShreshtha/DeepThought/issues/87">this github issue</a>, it seems to work in light mode but not dark mode, and that happened even on the out-of-the-box DeepThought content.  Hopefully that can be resolved.</p>
+<p>I'm still not sold on the colors, particularly for the links; I tried a blue with lower saturation, but it became harder to distinguish the links.  I also don't know that I like the DeepThought theme's default behavior of turning hovered links back to the plain text color, so I may revisit the styling later.</p>
+<p>One note is that while you can extend a theme by replacing its templates, once you start modifying the sass/css, it appears you no longer want to work with it within the theme directory.  In other words, just move the files from the theme directory into the root level equivalents.</p>
+<h2 id="deployment">Deployment</h2>
+<p>I had initially deployed to github pages with a different theme using shalzz's <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/shalzz/zola-deploy-action">github action</a>, and that worked pretty well (zola 0.17.2 had some issues, but 0.18.0 worked), but when I updated to using my own theme, the build failed silently.  <a rel="noopener nofollow noreferrer" target="_blank" href="https://developers.cloudflare.com/pages/">Cloudflare pages</a> offer a better free tier with <a rel="noopener nofollow noreferrer" target="_blank" href="https://developers.cloudflare.com/pages/framework-guides/deploy-a-zola-site/">Zola support</a> and <a rel="noopener nofollow noreferrer" target="_blank" href="https://developers.cloudflare.com/pages/how-to/web-analytics/">free, privacy-first analytics</a>, although I found I needed to <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.getzola.org/documentation/deployment/cloudflare-pages/#change-the-build-system-version-to-v1">change the build system back to v1</a> for it to work.</p>
+<p>One odd part of the process is that you have little say in the name of the subdomain from cloudflare.  They automatically assign the name of the repo as the project name.  I think there was an opportunity to edit the project name, but it was not obvious.  So my repo name was <code>blog</code> and I was assigned <code>blog-eng</code> as the subdomain.  That's not the worst subdomain, but I would have appreciated having a choice.</p>
+<p>Update: I was able to get the github actions to work for github.io.  Although I think Cloudflare has the nicer free tier, I'll stick with github.io for now.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 

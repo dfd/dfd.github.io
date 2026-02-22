@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - Development</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/categories/development/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Wed, 18 Feb 2026 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>A Solution to the Deluge of Bug Bounty and FOSS AI Slop Submissions</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Wed, 18 Feb 2026 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Development]]></category>
+          <category><![CDATA[Economics]]></category>
+          
+          
+          <category><![CDATA[solutions]]></category>
+          
+          <link>https://dfd.github.io/solution-ai-slop/</link>
+          <guid>https://dfd.github.io/solution-ai-slop/</guid>
+          <description><![CDATA[It seems many maintainers are drowning in AI submissions to bug bounties and FOSS contributions.  Many are frustrated by the volume of low quality PRs or submitters who don't seem to understand what they are submitting.
+Some maintainers are resorting to extreme measures or crying…]]></description>
+          <content:encoded><![CDATA[<p>It seems many maintainers are drowning in AI submissions to bug bounties and FOSS contributions.  Many are frustrated by the volume of low quality PRs or submitters who don't seem to understand what they are submitting.</p>
+<p>Some maintainers are resorting to <a rel="noopener nofollow noreferrer" target="_blank" href="https://etn.se/index.php/nyheter/72808-curl-removes-bug-bounties.html">extreme measures</a> or <a rel="noopener nofollow noreferrer" target="_blank" href="https://bsky.app/profile/akien.bsky.social/post/3meyerixvhs2p">crying out for help</a>.  One is attempting to set up a whole new system of <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/mitchellh/vouch">social trust</a> to address the issue.</p>
+<p>I'm happy to see experimentation in this area, and hope something shows efficacy and traction soon.  I want to throw another idea out into the ether that I think could help solve the problem.</p>
+<p>But first, let's analyze the problem:</p>
+<p>Generative AI coding has become very cheap.  Depending on how people use it, they either pay a flat fee, which gives them a marginal cost of zero to produce AI code (up to some usage limit) or they pay a very small “per token” fee.  In either case, the marginal cost of producing bug bounty submissions and open source pull requests has fallen to near zero, so people are doing much more of it.  It's not hard for someone to submit hundreds or thousands of submissions quickly with one of these subscriptions.  There was no cost to submit PRs or bug reports in the past, but it took a person's time, which is valuable.  But with LLMs, even that cost has shrunk dramatically.</p>
+<p>The potential benefits to submitters can vary.  For bug bounties, it's for a potential financial reward, and for PRs, it may be to help their reputation, resume, or to test a new AI bot they whipped up.</p>
+<p>Maintainers are annoyed at the low quality of submissions, in part because it's a cost (opportunity cost of their time) to review the PRs or bug bounty submissions.  It also crowds out reviews of new contributors who cannot be trusted by default.  For the purpose of this post, let's just take the maintainer's complaints as a given, and put aside any debate about whether AI could usefully help out.</p>
+<p>I believe there's a relatively easy solution to this: the maintainers can charge a small fee to submit PRs or bug bounties to their projects.  If the maintainers then believe the submission was made in good faith (whether they accept the submission or not), they should return the fee.  If they don't believe it was made in good faith, they keep it.  Maintainers have an incentive to return the fee to good faith contributors so that they continue to receive good quality submissions.  Submissions not addressed in a timely manner could be automatically refunded, and merged PRs could automatically result in a refund.</p>
+<p>That's it<sup class="footnote-reference"><a href="#integration">1</a></sup>.  That alone should greatly reduce AI slop submissions.  It takes something with a marginal cost near 0 and increases it enough to stop mass submissions of slop, because the submitters will risk losing money proportionally to the number of their slop submissions.  I don't know exactly where that price should be, maybe $1.  Maybe it varies by project.  It's hard to know what price will be enough to stop the slop deluge, but I don't think it would need to be too high to stop mass offenders, and I'm confident such a price exists.</p>
+<p>To avoid discouraging good submissions, the result of each submission should be transparent, and the display of the result of returning the fee or not should be outside the control of the maintainers.  This way, would-be contributors could audit their track record of returning the fees to good faith efforts.  Having some friction in the PR or bug bounty process will still risk lowering good faith submissions when the submitters are worried about losing their fee.  But we should expect that to mostly reduce lower quality good faith submissions (which have always been there, just not in large quantities), because they're the ones least confident in having their submissions viewed as good faith.</p>
+<p>One real life drag on such a system is that financial transactions normally come with small transaction costs.  So each project would need to decide who eats that cost.  I would guess that large, important projects would probably ask the submitters to eat it, and small projects who are desperate for help might volunteer to eat it.  Between that and the pricing, there's plenty of room to experiment.  Transaction costs are typically very small, and if it solves the problem, then it could easily be worth it.  To be clear, if a solution without transaction costs, like the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/mitchellh/vouch">vouch</a>, can work, than that is preferred.  I'm most confident my proposed solution would work well for bug bounties, where there are already financial transactions involved, and rewards at stake.</p>
+<p>No need to detect AI with more AI.  No worrying about AI slop submitters changing github usernames.  No need to close off projects or end bug bounties.  Just put a small, refundable cost to submitters, and watch the slop submissions drop dramatically.  Even if I'm wrong and it doesn't stop the problem, at least you can fund more maintainers to review the slop!</p>
+<h3 id="footnote">Footnote</h3>
+<p><sup class="footnote-reference"><a href="#integration">1</a></sup> I mean, &quot;that's it&quot; conceptually.  Building this application and integrating it with social coding platforms would take effort.  But they would be rewarded with the transaction fees.</p>
+]]></content:encoded>
+      </item>
+      <item>
+          <title>Changing Zola&#x27;s Content Structure</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Tue, 27 Feb 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Development]]></category>
+          
+          
+          <category><![CDATA[zola]]></category>
+          
+          <link>https://dfd.github.io/changing-zola-structure/</link>
+          <guid>https://dfd.github.io/changing-zola-structure/</guid>
+          <description><![CDATA[<p>A note for my future self on how to edit the Zola content structure.</p>
+]]></description>
+          <content:encoded><![CDATA[<p>A note for my future self on how to edit the Zola content structure.</p>
+<span id="continue-reading"></span>
+<p>This wasn't that hard, but in case I want to do it again, I'll leave a note here about how I changed the Zola content structure for this blog.</p>
+<p>I was originally using the structure from <a rel="noopener nofollow noreferrer" target="_blank" href="https://deepthought-theme.netlify.app/docs/">Deep Thought</a>, but decided that I wanted the posts to show up at the root, with the former home page in an <code>About</code> section.   To do this, I had to switch the <code>index.html</code> with the <code>section.html</code> in <code>templates</code>.  Then in the <code>content</code> directory, I created an <code>about</code> directory, and dropped the original <code>_index.md</code> there, then I dumped the files from the <code>posts</code> directory in the root directory.  Then I had to edit the <code>navbar_items</code> in the <code>config.toml</code> to map the section names to their new locations.  The last part, which I didn't realize until I previewed the deployment, was that I needed to change the <code>avatar</code> from <code>config.toml</code> from <code>images/avatar.png</code> to <code>/images/avatar.png</code>.</p>
+]]></content:encoded>
+      </item>
+      <item>
+          <title>Creating this blog</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Wed, 27 Dec 2023 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Development]]></category>
+          
+          
+          <category><![CDATA[zola]]></category>
+          <category><![CDATA[front end]]></category>
+          
+          <link>https://dfd.github.io/creating-this-blog/</link>
+          <guid>https://dfd.github.io/creating-this-blog/</guid>
+          <description><![CDATA[<p>As is tradition, I will use the first post of my new blog to briefly describe how I set it up.</p>
+]]></description>
+          <content:encoded><![CDATA[<p>As is tradition, I will use the first post of my new blog to briefly describe how I set it up.</p>
+<span id="continue-reading"></span><h2 id="choosing-a-framework-and-theme">Choosing a framework and theme</h2>
+<p>Since I'm planning to make 2024 <em>the year of Rust</em>, I wanted to use a static site generator written in Rust, and <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.getzola.org/">Zola</a> seemed to be the best choice.  I wanted to find a theme that used the CSS framework <a rel="noopener nofollow noreferrer" target="_blank" href="https://bulma.io/">Bulma</a>, which offers the right level of customization for something like this.  I found <a rel="noopener nofollow noreferrer" target="_blank" href="https://deepthought-theme.netlify.app/docs/">DeepThought</a>, which had the high level features I wanted and seemed well-organized.  However, I thought the design was a little too busy; I wanted a simpler, flatter style, so I started hacking away at the sass/css and <a rel="noopener nofollow noreferrer" target="_blank" href="https://keats.github.io/tera/docs/">Tera templates</a> until I got something I liked well enough.</p>
+<p>The templates were relatively easy to understand; they're very similar to <a rel="noopener nofollow noreferrer" target="_blank" href="https://palletsprojects.com/p/jinja/">jinja templates</a> in Python.  I hadn't worked with <a rel="noopener nofollow noreferrer" target="_blank" href="https://sass-lang.com/">sass</a> before, so that took some exploration and consultation with ChatGPT at times.</p>
+<p>It was mostly a good experience, although I think there may be an <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/getzola/zola/issues/2393">issue</a> with next/previous page directions in Zola.</p>
+<h2 id="styling">Styling</h2>
+<p>I got rid of the 3D box shadows on each post, instead adding a backlight effect to each flat item on <code>hover</code>.  I went with a grayscale palette with just a couple of colors, adding a brown for icons and table of contents highlighting to complement the dark blue used for links.  Adobe offers a <a rel="noopener nofollow noreferrer" target="_blank" href="https://color.adobe.com/create/color-wheel">nice tool for selecting color palettes</a>.  The framework by default includes a search function, but since it's a static site, this is done by pushing a large javascript file with all the sites indexed content to the browser.  That seemed heavy, and google site searches are probably good enough.  Fully removing it was not as easy as just setting the <code>build_search_index = false</code> however; the search icon was hard coded into the navbar within the <code>base.html</code> template.  So I had to remove that, but doing so broke the <code>site.js</code> including the dark mode toggle.  So I had to remove all the javascript related to search before it worked properly.</p>
+<p>One issue I couldn't figure out was how to get the DeepThought <code>navbar</code> to have a fixed position at the top.  As I described in <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/RatanShreshtha/DeepThought/issues/87">this github issue</a>, it seems to work in light mode but not dark mode, and that happened even on the out-of-the-box DeepThought content.  Hopefully that can be resolved.</p>
+<p>I'm still not sold on the colors, particularly for the links; I tried a blue with lower saturation, but it became harder to distinguish the links.  I also don't know that I like the DeepThought theme's default behavior of turning hovered links back to the plain text color, so I may revisit the styling later.</p>
+<p>One note is that while you can extend a theme by replacing its templates, once you start modifying the sass/css, it appears you no longer want to work with it within the theme directory.  In other words, just move the files from the theme directory into the root level equivalents.</p>
+<h2 id="deployment">Deployment</h2>
+<p>I had initially deployed to github pages with a different theme using shalzz's <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/shalzz/zola-deploy-action">github action</a>, and that worked pretty well (zola 0.17.2 had some issues, but 0.18.0 worked), but when I updated to using my own theme, the build failed silently.  <a rel="noopener nofollow noreferrer" target="_blank" href="https://developers.cloudflare.com/pages/">Cloudflare pages</a> offer a better free tier with <a rel="noopener nofollow noreferrer" target="_blank" href="https://developers.cloudflare.com/pages/framework-guides/deploy-a-zola-site/">Zola support</a> and <a rel="noopener nofollow noreferrer" target="_blank" href="https://developers.cloudflare.com/pages/how-to/web-analytics/">free, privacy-first analytics</a>, although I found I needed to <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.getzola.org/documentation/deployment/cloudflare-pages/#change-the-build-system-version-to-v1">change the build system back to v1</a> for it to work.</p>
+<p>One odd part of the process is that you have little say in the name of the subdomain from cloudflare.  They automatically assign the name of the repo as the project name.  I think there was an opportunity to edit the project name, but it was not obvious.  So my repo name was <code>blog</code> and I was assigned <code>blog-eng</code> as the subdomain.  That's not the worst subdomain, but I would have appreciated having a choice.</p>
+<p>Update: I was able to get the github actions to work for github.io.  Although I think Cloudflare has the nicer free tier, I'll stick with github.io for now.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - bad practices</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/tags/bad-practices/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 02 Mar 2025 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Don&#x27;t Conform Your Data to the Model. Do the Opposite.</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Sun, 02 Mar 2025 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Statistics]]></category>
+          
+          
+          <category><![CDATA[ab testing]]></category>
+          <category><![CDATA[bad practices]]></category>
+          <category><![CDATA[winsorizing]]></category>
+          
+          <link>https://dfd.github.io/dont-conform-data-to-the-model/</link>
+          <guid>https://dfd.github.io/dont-conform-data-to-the-model/</guid>
+          <description><![CDATA[In this post, I'll be responding to an idea I saw on LinkedIn.  See my guidelines on naming names.
+The Problem
+I recently saw a post on LinkedIn which serves as a nice example of how the null hypothesis mindset leads people to poor statistical decision making.  The author works a…]]></description>
+          <content:encoded><![CDATA[<p>In this post, I'll be responding to an idea I saw on LinkedIn.  See my guidelines on <a href="https://dfd.github.io/guidelines-on-naming-names/">naming names</a>.</p>
+<h2 id="the-problem">The Problem</h2>
+<p>I recently saw <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.linkedin.com/posts/tyler-buffington-82a1a212a_not-all-outlier-handling-approaches-are-created-activity-7285002769231425536-mty1/">a post on LinkedIn</a> which serves as a nice example of how the null hypothesis mindset leads people to poor statistical decision making.  The author works at an AB testing as a service company.  Here is the post:</p>
+<p><img src="https://dfd.github.io/dont-conform-data-to-the-model/post.png" alt="png" /></p>
+<p>I agree with most of the points listed, but I want to focus on the suggestion to Winsorize the data and the plots at the bottom of the post.</p>
+<p>The issue here is that the author wants to be able to compare the effect of a treatment on a continuous variable.  The problem arises presumably because the author wants to conduct a two-sample t-test on the observations against a null hypothesis, but the skewed distribution of the observables will mean the <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Student&#x27;s_t-test#Assumptions">assumption of normality on the sampling distribution of the means</a> won't be valid at lower sample sizes, and hence will decrease the power of the test.</p>
+<h2 id="the-proposed-solution">The Proposed Solution</h2>
+<p><a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Winsorizing">Winsorizing</a> is used to clip the highest values to reduce the skewness in the observed data; so instead of a long tail, the empirical distribution now has a small peak at whatever the threshold was.</p>
+<p>If we suppose a frequentist null hypothesis test is what they want, there are problems with using a t-test here:</p>
+<ol>
+<li>If we don't Winsorize the data, then the normality assumptions on the means do not hold until larger sample sizes (using <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Central_limit_theorem">CLT</a>).  So for sample sizes at which CLT does not apply (and what is that cutoff exactly?), the &quot;frequentist guarantees&quot; don't apply.</li>
+<li>If we do Winsorize, then we've changed our data so the frequentist guarantees also don't apply.  How could they?  We're throwing out data so we won't have accurate estimates in the difference of our means.</li>
+</ol>
+<p>The post frames this as a bias/variance trade-off.  While this is better than insisting on unbiasedness above all else, it seems to ignore the typical reasons given for using the null hypothesis test in the first place: those guarantees.</p>
+<p>Even if the method of analysis isn't a null hypothesis test, Winsorizing data still throws out information that might change our conclusion, had we not capped it.  The value at which to cap it will necessarily be arbitrary. If we cap it ahead of time, then we may not know where a good cap is; if we cap it after the fact, how do we know our bias hasn't influenced the choice of cap?</p>
+<p>In the <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.linkedin.com/posts/ronnyk_abtest-activity-7254731531049488384-hh6J/">Ron Kohavi post linked to in the screenshot</a>, he discusses using the technique to reduce skewness and increase power.  But increased power to compare what? If the continuous metric is what you care about, it's no longer clear what you're comparing with the new capped metric. He even gives an example of reducing required sample size by 50% through capping, and suggests capping at different levels to compare results.  But how to decide which results to use?  Maybe he explains it in his course that he links to, but it's hard to imagine a principled approach to deciding, and providing multiple options risks cherry-picking a convenient false positive.</p>
+<h2 id="the-alternative-solution">The Alternative Solution</h2>
+<p>Instead of trying to make our data conform to the assumption of our model (the t-test relies on a model of the null hypothesis), we should do the opposite and find a model that describes the data well.  Looking back at the post in the screenshot, we see an illustrative sample provided by the author.  It looks like it would be well approximated by a log-distribution, and in my experience, this is quite common in revenue or customer lifetime value metrics.  I agree with the author that we should not simply log the observations, but we could model the samples as log-normal distributions.  Here are some benefits of doing so:</p>
+<ol>
+<li>We don't throw out information.  Assuming our measurements aren't flawed, we should try to retain all available information from these tests.  Driving higher revenue value is valuable to the company.  If we use the same Winsor cutoff on both samples, then whichever sample drove more users above the cutoff will be punished in the comparison. </li>
+<li>The log-normal distribution naturally discounts the impact of outliers in the sample.  It does this by estimating its parameters on the log scale.  So we don't need to worry if one sample &quot;got lucky&quot; with a random draw far out in its tail; we won't be using its raw value in a mean calculation.</li>
+<li>But this is different than just comparing the logged values.  The mean of a <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Log-normal_distribution">log-normal distribution</a> is a function of its log mean and standard deviation parameters: $\exp(\mu + \frac{\sigma^2}{2})$. So we can take into account how both the mean and spread of the distribution on the log scale impact the metric we car about in its original scale.</li>
+<li>If the log-normal assumptions are a good match for the data, then it is a sample-efficient way to estimate the parameters.</li>
+</ol>
+<p>Using Bayesian methods, we can estimate the parameters and create derived quantities using the equation above and have a posterior distribution over the difference, which we can use to estimate the probability of the treatment having a higher mean revenue or whatever we would like to know.</p>
+<p>Of course, this may not work well in all situations; not all businesses have revenue distributions that are well modeled by log-normals.  But perhaps other distributions will work well in those cases.  When we conform our modeling assumptions to the nature of our data, we can make better comparisons about the things we care about in sample efficient ways.  No need to cap.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 

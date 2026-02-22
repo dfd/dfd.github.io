@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - Political Science</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/categories/political-science/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 20 Oct 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Can Primary Elections Cause Polarization?  A Toy Model</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Political Science]]></category>
+          
+          
+          <category><![CDATA[voting]]></category>
+          <category><![CDATA[toy model]]></category>
+          
+          <link>https://dfd.github.io/primaries-polarization/</link>
+          <guid>https://dfd.github.io/primaries-polarization/</guid>
+          <description><![CDATA[Introduction
+There has been much speculation that Americans have become more politically polarized in recent years.  But the evidence seems to point to political parties become more polarized rather than the population itself.  In other words, there is more ideoleogical sorting i…]]></description>
+          <content:encoded><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>There has been much speculation that Americans have become more politically polarized in recent years.  But the evidence seems to point to political parties become more polarized rather than the population itself.  In other words, there is more ideoleogical sorting in party membership than before.  <a rel="noopener nofollow noreferrer" target="_blank" href="https://statmodeling.stat.columbia.edu/2024/10/15/things-are-getting-so-politically-polarized-we-cant-measure-how-politically-polarized-things-are-getting/">Andrew Gelman recently blogged about this</a> (citing a <a rel="noopener nofollow noreferrer" target="_blank" href="https://madeinamericathebook.wordpress.com/2024/06/20/things-are-getting-so-politically-polarized-we-cant-measure-how-politically-polarized-things-are-getting/">post by Claude Fischer</a>), and I agree with his observation that it seems like people tend to cast votes more against the other side than for their own these days.</p>
+<p>Allen Downey <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2022/09/11/polarization-and-partisan-sorting/">looked at survey results a couple of years ago and came to a similar conclusion</a>.  He also points out that &quot;the percentage of Nonpartisans has increased to the point where they are now the plurality.&quot;</p>
+<p>In this post, I will present a toy model that extends the median voter theorem to show how primary presidential elections might lead to these results.  To be clear, I will prove nothing here.  I won't even try to fit a model to empirical data.  This is more in the spirit of <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Schelling%27s_model_of_segregation">Schelling's segregation model</a>, which showed how slight in-group preferences could lead to highly segregated housing.  He never claimed this was the only cause or even the primary cause of observed, real-life segregation; merely that it was a plausible mechanism through which housing segregation could occur.  Similarly, I'll just try to give an intuition of how primary elections might lead to political polarization and growing independents under some assumptions.</p>
+<h2 id="the-median-voter-theorem-and-hotelling-s-law">The median voter theorem and Hotelling's law</h2>
+<p><a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Median_voter_theorem">The median voter theorem</a> supposes that voters have preferences along a one-dimensional spectrum and that voters cast votes for the candidate closest to their position, and then states voters will elect the candidate whose position is closest to the median voter.  I'm also supposing <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Hotelling%27s_law#Political_science">Hotelling's law</a> behavior, whereby politicians will position themselves at the median to win elections. I'm simplifying a bit, but that's a good enough intuition in a &quot;one person, one vote&quot; system.</p>
+<figure class="image">
+  <img src="Median_voter.png">
+  <figcaption>An illustration of the median voter theorem.<br>Attribution:
+  <a href="https://commons.wikimedia.org/wiki/File:Median_voter.png">Colin.champion</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>, via Wikimedia Commons
+</figcaption>
+</figure>
+<h2 id="extension-and-repetition">Extension and repetition</h2>
+<p>In this post, I will suppose the following:</p>
+<ul>
+<li>Political positions of the electorate are well described by a Gaussian distribution</li>
+<li>The winning candidate of party's primary positions his or herself at the median vote of that party</li>
+<li>Voters use presidential nominees as flagpoles of each party's position</li>
+<li>Voters estimate the midpoint between flagpoles of each party, and this midpoint become the flagpole for independents</li>
+<li>Voters then categorize themselves according to the flagpole that is closest to them</li>
+</ul>
+<p>In other words, this model represents people choosing to affiliate with whatever is closest to their views: one of two parties or the midpoint between them.</p>
+<p>We will develop a toy model for this, and see how it leads to growing polarization between parties and a growing number of independents over time.</p>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#f92672dd;">import </span><span>numpy </span><span style="color:#cc7833;">as </span><span>np
+</span><span style="color:#f92672dd;">import </span><span>matplotlib.pyplot </span><span style="color:#cc7833;">as </span><span>plt
+</span><span>
+</span><span style="color:#95815e;"># generate first voters, who each belong to a party to start
+</span><span>np.random.seed(</span><span style="color:#a5c261;">3</span><span>)
+</span><span>party1 </span><span style="color:#cc7833;">= </span><span>np.random.normal(</span><span style="color:#a5c261;">0</span><span>, </span><span style="color:#a5c261;">1</span><span>, </span><span style="font-style:italic;color:#fd971f;">size</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">500</span><span>)
+</span><span>party2 </span><span style="color:#cc7833;">= </span><span>np.random.normal(</span><span style="color:#a5c261;">0</span><span>, </span><span style="color:#a5c261;">1</span><span>, </span><span style="font-style:italic;color:#fd971f;">size</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">500</span><span>)
+</span><span>
+</span><span>all_voters </span><span style="color:#cc7833;">= </span><span>np.hstack([party1, party2])
+</span><span>
+</span><span>party1_flagpole </span><span style="color:#cc7833;">= </span><span>np.median(party1)
+</span><span>party2_flagpole </span><span style="color:#cc7833;">= </span><span>np.median(party2)
+</span><span>independent_flagpole </span><span style="color:#cc7833;">= </span><span>(party1_flagpole </span><span style="color:#cc7833;">+ </span><span>party2_flagpole)</span><span style="color:#cc7833;">/</span><span style="color:#a5c261;">2
+</span><span>
+</span><span>party_array </span><span style="color:#cc7833;">= </span><span>np.array([independent_flagpole, party1_flagpole, party2_flagpole])
+</span></code></pre>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span>rounds </span><span style="color:#cc7833;">= </span><span style="color:#a5c261;">7
+</span><span>results </span><span style="color:#cc7833;">= </span><span>np.empty((rounds, </span><span style="color:#da4939;">len</span><span>(all_voters)))
+</span><span>flagpoles </span><span style="color:#cc7833;">= </span><span>np.empty((rounds, </span><span style="color:#a5c261;">3</span><span>))
+</span><span style="color:#cc7833;">for </span><span>i </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(rounds):
+</span><span>    flagpoles[i, :] </span><span style="color:#cc7833;">= </span><span>party_array
+</span><span>    closest_indices </span><span style="color:#cc7833;">= </span><span>np.abs(all_voters[:, np.newaxis] </span><span style="color:#cc7833;">- </span><span>party_array).argmin(</span><span style="font-style:italic;color:#fd971f;">axis</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">1</span><span>)
+</span><span>    results[i, :] </span><span style="color:#cc7833;">= </span><span>closest_indices
+</span><span>    </span><span style="color:#95815e;"># now group into new parties
+</span><span>    party1 </span><span style="color:#cc7833;">= </span><span>all_voters[closest_indices</span><span style="color:#cc7833;">==</span><span style="color:#a5c261;">1</span><span>]
+</span><span>    party2 </span><span style="color:#cc7833;">= </span><span>all_voters[closest_indices</span><span style="color:#cc7833;">==</span><span style="color:#a5c261;">2</span><span>]
+</span><span>
+</span><span>    party1_flagpole </span><span style="color:#cc7833;">= </span><span>np.median(party1)
+</span><span>    party2_flagpole </span><span style="color:#cc7833;">= </span><span>np.median(party2)
+</span><span>    independent_flagpole </span><span style="color:#cc7833;">= </span><span>(party1_flagpole </span><span style="color:#cc7833;">+ </span><span>party2_flagpole)</span><span style="color:#cc7833;">/</span><span style="color:#a5c261;">2
+</span><span>    party_array </span><span style="color:#cc7833;">= </span><span>np.array([independent_flagpole, party1_flagpole, party2_flagpole])
+</span><span>    
+</span></code></pre>
+<p>We can look at party membership over time</p>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span>plt.plot((results</span><span style="color:#cc7833;">==</span><span style="color:#a5c261;">0</span><span>).sum(</span><span style="font-style:italic;color:#fd971f;">axis</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">1</span><span>), </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;Independents&#39;</span><span>)
+</span><span>plt.plot((results</span><span style="color:#cc7833;">==</span><span style="color:#a5c261;">1</span><span>).sum(</span><span style="font-style:italic;color:#fd971f;">axis</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">1</span><span>), </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;Party 1&#39;</span><span>)
+</span><span>plt.plot((results</span><span style="color:#cc7833;">==</span><span style="color:#a5c261;">2</span><span>).sum(</span><span style="font-style:italic;color:#fd971f;">axis</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">1</span><span>), </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;Party 2&#39;</span><span>)
+</span><span>plt.xticks(</span><span style="font-style:italic;color:#fd971f;">ticks</span><span style="color:#cc7833;">=</span><span style="color:#da4939;">range</span><span>(results.shape[</span><span style="color:#a5c261;">0</span><span>]), </span><span style="font-style:italic;color:#fd971f;">labels</span><span style="color:#cc7833;">=</span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">1</span><span>, results.shape[</span><span style="color:#a5c261;">0</span><span>] </span><span style="color:#cc7833;">+ </span><span style="color:#a5c261;">1</span><span>))
+</span><span>plt.legend()
+</span><span>plt.gca().set_ylabel(</span><span style="color:#a5c261;">&#39;Voter Counts&#39;</span><span>)
+</span><span>plt.gca().set_xlabel(</span><span style="color:#a5c261;">&#39;Election Number&#39;</span><span>)
+</span><span>plt.show();
+</span></code></pre>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_9_0.png" alt="png" /></p>
+<p>And look at the flagpole positions over time.</p>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span>plt.plot(flagpoles)
+</span><span>plt.gca().set_ylabel(</span><span style="color:#a5c261;">&#39;Flagpole position&#39;</span><span>)
+</span><span>plt.gca().set_xlabel(</span><span style="color:#a5c261;">&#39;Election Number&#39;</span><span>)
+</span><span>plt.xticks(</span><span style="font-style:italic;color:#fd971f;">ticks</span><span style="color:#cc7833;">=</span><span style="color:#da4939;">range</span><span>(results.shape[</span><span style="color:#a5c261;">0</span><span>]), </span><span style="font-style:italic;color:#fd971f;">labels</span><span style="color:#cc7833;">=</span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">1</span><span>, results.shape[</span><span style="color:#a5c261;">0</span><span>] </span><span style="color:#cc7833;">+ </span><span style="color:#a5c261;">1</span><span>)) 
+</span><span>plt.show();
+</span></code></pre>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_11_0.png" alt="png" /></p>
+<p>Let's look at how it evolves over time with voters and their relative positions.</p>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span>party_colors </span><span style="color:#cc7833;">= </span><span>[</span><span style="color:#a5c261;">&#39;C0&#39;</span><span>, </span><span style="color:#a5c261;">&#39;C1&#39;</span><span>, </span><span style="color:#a5c261;">&#39;C2&#39;</span><span>]
+</span><span>party_names </span><span style="color:#cc7833;">= </span><span>[</span><span style="color:#a5c261;">&#39;Independents&#39;</span><span>, </span><span style="color:#a5c261;">&#39;Party 1&#39;</span><span>, </span><span style="color:#a5c261;">&#39;Party 2&#39;</span><span>]
+</span></code></pre>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#cc7833;">for </span><span>round_idx </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(rounds):
+</span><span>    plt.figure(</span><span style="font-style:italic;color:#fd971f;">figsize</span><span style="color:#cc7833;">=</span><span>(</span><span style="color:#a5c261;">8</span><span>, </span><span style="color:#a5c261;">2</span><span>))
+</span><span>
+</span><span>    </span><span style="color:#cc7833;">for </span><span>party </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">3</span><span>):
+</span><span>        party_voters </span><span style="color:#cc7833;">= </span><span>all_voters[results[round_idx] </span><span style="color:#cc7833;">== </span><span>party]
+</span><span>        plt.scatter(
+</span><span>            party_voters,
+</span><span>            np.zeros_like(party_voters),
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">color</span><span style="color:#cc7833;">=</span><span>party_colors[party],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">marker</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;|&#39;</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">s</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">100</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span>party_names[party],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">alpha</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">0.2</span><span>,
+</span><span>        )
+</span><span>
+</span><span>    </span><span style="color:#cc7833;">for </span><span>party </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">3</span><span>):
+</span><span>        flagpole_pos </span><span style="color:#cc7833;">= </span><span>flagpoles[round_idx, party]
+</span><span>        plt.plot(
+</span><span>            [flagpole_pos, flagpole_pos],
+</span><span>            [</span><span style="color:#a5c261;">0</span><span>, </span><span style="color:#a5c261;">0.2</span><span>],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">color</span><span style="color:#cc7833;">=</span><span>party_colors[party],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">linestyle</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;-&#39;</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">linewidth</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">2</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span style="color:#c1be91;">&quot;_nolegend_&quot;</span><span>,
+</span><span>        )
+</span><span>
+</span><span>    plt.title(</span><span style="font-style:italic;color:#6e9cbe;">f</span><span style="color:#a5c261;">&#39;Round </span><span>{round_idx </span><span style="color:#cc7833;">+ </span><span style="color:#a5c261;">1</span><span>}</span><span style="color:#a5c261;">&#39;</span><span>)
+</span><span>    plt.gca().set_xlabel(</span><span style="color:#a5c261;">&#39;Political Position&#39;</span><span>)
+</span><span>    plt.yticks([])
+</span><span>    plt.legend()
+</span><span>
+</span><span>    plt.show()
+</span><span>
+</span></code></pre>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_0.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_1.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_2.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_3.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_4.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_5.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_14_6.png" alt="png" /></p>
+<p>Now instead of showing it by political position on the x-axis, let's give each voter equal width on the x-axis to better show how the proportions change.  We'll align the flagpoles with the closest voter.</p>
+<pre data-lang="python" style="background-color:#383838;color:#e6e1dc;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#cc7833;">for </span><span>round_idx </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(rounds):
+</span><span>    plt.figure(</span><span style="font-style:italic;color:#fd971f;">figsize</span><span style="color:#cc7833;">=</span><span>(</span><span style="color:#a5c261;">8</span><span>, </span><span style="color:#a5c261;">2</span><span>))
+</span><span>
+</span><span>    </span><span style="color:#95815e;"># voter positions and the corresponding party votes for this round
+</span><span>    voters_positions </span><span style="color:#cc7833;">= </span><span>all_voters
+</span><span>    parties </span><span style="color:#cc7833;">= </span><span>results[round_idx] 
+</span><span>
+</span><span>    </span><span style="color:#95815e;"># sort voters and their corresponding party by their position
+</span><span>    sorted_indices </span><span style="color:#cc7833;">= </span><span>np.argsort(voters_positions)
+</span><span>    sorted_voters </span><span style="color:#cc7833;">= </span><span>voters_positions[sorted_indices]
+</span><span>    sorted_parties </span><span style="color:#cc7833;">= </span><span>parties[sorted_indices].astype(</span><span style="font-style:italic;color:#6e9cbe;">int</span><span>)
+</span><span>
+</span><span>    </span><span style="color:#95815e;"># generate evenly spaced x-values for the voters, from 0 to 1
+</span><span>    x_values </span><span style="color:#cc7833;">= </span><span>np.linspace(</span><span style="color:#a5c261;">0</span><span>, </span><span style="color:#a5c261;">1</span><span>, </span><span style="color:#da4939;">len</span><span>(sorted_voters))
+</span><span>
+</span><span>    
+</span><span>    </span><span style="color:#cc7833;">for </span><span>i </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(</span><span style="color:#da4939;">len</span><span>(sorted_voters) </span><span style="color:#cc7833;">- </span><span style="color:#a5c261;">1</span><span>):
+</span><span>        plt.plot(
+</span><span>            x_values[i:i </span><span style="color:#cc7833;">+ </span><span style="color:#a5c261;">2</span><span>], [</span><span style="color:#a5c261;">0</span><span>, </span><span style="color:#a5c261;">0</span><span>],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">color</span><span style="color:#cc7833;">=</span><span>party_colors[sorted_parties[i]],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">lw</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">2</span><span>, </span><span style="font-style:italic;color:#fd971f;">alpha</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">0.2
+</span><span>        )
+</span><span>
+</span><span>    </span><span style="color:#95815e;"># flagpoles
+</span><span>    </span><span style="color:#cc7833;">for </span><span>party </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">3</span><span>):
+</span><span>        flagpole_pos </span><span style="color:#cc7833;">= </span><span>flagpoles[round_idx, party]
+</span><span>        nearest_voter_idx </span><span style="color:#cc7833;">= </span><span>np.abs(sorted_voters </span><span style="color:#cc7833;">- </span><span>flagpole_pos).argmin()
+</span><span>        nearest_voter_x </span><span style="color:#cc7833;">= </span><span>x_values[nearest_voter_idx]
+</span><span>
+</span><span>        plt.axvline(
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">x</span><span style="color:#cc7833;">=</span><span>nearest_voter_x,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">color</span><span style="color:#cc7833;">=</span><span>party_colors[party],
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">linestyle</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;--&#39;</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">linewidth</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">2</span><span>,
+</span><span>            </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span style="color:#c1be91;">&quot;_nolegend_&quot; 
+</span><span>        )
+</span><span>
+</span><span>    </span><span style="color:#cc7833;">for </span><span>party </span><span style="color:#cc7833;">in </span><span style="color:#da4939;">range</span><span>(</span><span style="color:#a5c261;">3</span><span>):
+</span><span>        plt.plot([], [], </span><span style="font-style:italic;color:#fd971f;">color</span><span style="color:#cc7833;">=</span><span>party_colors[party], </span><span style="font-style:italic;color:#fd971f;">lw</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">2</span><span>, </span><span style="font-style:italic;color:#fd971f;">label</span><span style="color:#cc7833;">=</span><span>party_names[party])
+</span><span>
+</span><span>    plt.title(</span><span style="font-style:italic;color:#6e9cbe;">f</span><span style="color:#a5c261;">&#39;Round </span><span>{round_idx </span><span style="color:#cc7833;">+ </span><span style="color:#a5c261;">1</span><span>}</span><span style="color:#a5c261;">&#39;</span><span>)
+</span><span>    plt.gca().set_xlabel(</span><span style="color:#a5c261;">&#39;Voter Rank (Equal Spacing)&#39;</span><span>)
+</span><span>    plt.yticks([])  </span><span style="color:#95815e;"># Remove y-axis
+</span><span>
+</span><span>    plt.legend(</span><span style="font-style:italic;color:#fd971f;">loc</span><span style="color:#cc7833;">=</span><span style="color:#a5c261;">&#39;upper right&#39;</span><span>)
+</span><span>
+</span><span>    plt.show()
+</span></code></pre>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_0.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_1.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_2.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_3.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_4.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_5.png" alt="png" /></p>
+<p><img src="https://dfd.github.io/primaries-polarization/primaries-polarization_files/primaries-polarization_16_6.png" alt="png" /></p>
+<p>So that illustrates the intuition behind this toy model, how it could lead to political polarization between parties and growth in independents.  However, one might notice that most of the polarization happened quite quickly toward the beginning (this is in part because I started independents as such a small group).</p>
+<p>One could imagine extending this model such that affiliation switching is done with a lag as voters wonder, &quot;has my party really left me?&quot; and verify over several cycles that they are now closer to the center than to their party.  Or perhaps switching could be done probabilistically according to a function of how far the party has drifted from them and over how many cycles.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>So, what have we proved?  Nothing.  As mentioned up top, this is just a toy model and there are other plausible causes of party polarization.  But I encourage you to go look at Allen Downey's <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2022/09/11/polarization-and-partisan-sorting/">post on the topic</a>, where we can see that this move toward modern polarization took place shortly after <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/United_States_presidential_primary#National_binding_primary_era_(1972%E2%80%93present)">national binding primary era started in 1972</a>.  In the absence of primaries, <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Median_voter_theorem#Hotelling-Downs_median_voter_model">Hotelling's law suggests</a> political parties would be more focused on nominating candidates positioned toward the median of the general electorate (or at least of the swing states), rather than the median of their own party.  Hopefully this post gives some intuition as to how such polarization might arise under a few simplifying assumptions about party primaries and affiliation.</p>
+]]></content:encoded>
+      </item>
+      <item>
+          <title>A Solution to Gerrymandering: Virtual Districts</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Political Science]]></category>
+          <category><![CDATA[Game Theory]]></category>
+          
+          
+          <category><![CDATA[voting]]></category>
+          <category><![CDATA[government]]></category>
+          
+          <link>https://dfd.github.io/virtual-districts/</link>
+          <guid>https://dfd.github.io/virtual-districts/</guid>
+          <description><![CDATA[Introduction
+First, let’s define it: gerrymandering is the manipulation of arbitrary geographic boundaries of voting districts by a dominant political party to increase its representation in government.  This happens all over the world, but I’ll focus my discussion on the United …]]></description>
+          <content:encoded><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>First, let’s define it: gerrymandering is the manipulation of arbitrary geographic boundaries of voting districts by a dominant political party to increase its representation in government.  This happens all over the world, but I’ll focus my discussion on the United States, as I’m most familiar with it.  <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Gerrymandering_in_the_United_States#Examples_of_gerrymandered_U.S._districts">Wikipedia provides some nice illustrative examples</a> of the issue, where we can see spiraling borders on Congressional districts to dilute the voters of a state’s minority party to help the majority party win more seats in Congress.  It’s a nice, visual example of politics at its worst: suppressing the voice of opponents.  The question is, what can be done about it?</p>
+<figure class="image">
+<img src="Maryland_US_Congressional_District_3.tif">
+  <!--<figcaption>Examples of gerrymandering Congressional districts in the US.</figcaption>
+</figure>
+<figure class="image">-->
+<img src="Illinois_District_4_2004.png">
+  <!--<figcaption>Examples of gerrymandering Congressional districts in the US.</figcaption>
+</figure>
+<figure class="image">-->
+  <img src="North_Carolina_12th_Congressional_District.gif">
+  <figcaption>Examples of gerrymandering Congressional districts in the US.</figcaption>
+</figure>
+<p>Even restrictions on the type of boundaries will not satisfactorily solve the problem.  Allowing fewer degrees of freedom helps, but even normal looking shapes <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.quantamagazine.org/how-math-has-changed-the-shape-of-gerrymandering-20230601/">still may be used to create heavily disproportional representation with modern computers</a>.  You could even end up with skewed representation by chance.  For instance, imagine making a rule that Congressional districts will be defined by only longitudinal lines and state borders, such that each district holds $1/k$ proportion of the state voting age population, where $k$ is the number of Congressional seats.  It could just so happen that due to the distribution of residents that this leads to disproportional representation of the state’s voters, even with no ill intent.</p>
+<h2 id="the-goal">The goal</h2>
+<p>Let’s define a goal and then devise a system that achieves that goal.  We’re going to make some simplifying assumptions to make this tractable.  Let’s suppose we are in a two party political system, and all voters are in those two parties.  Further, we are in a state with $k$ Congressional seats and $n$ voters with $m$ share in the minority party and $(1 - m)$ in the majority party.  Another constraint is that each district must represent roughly the same number of eligible voters (for simplicity, we’ll assume $k$ is a factor of $n$ and that each district will have $n/k$ voters).</p>
+<p>We want to devise a system in which no fewer than $\left\lfloor(k \times m) \right\rfloor$ Congressional seats are allocated to the minority party, assuming all voters vote along party lines.</p>
+<h2 id="virtual-districts">Virtual districts</h2>
+<p>A way out of this is to get rid of the arbitrary geographic borders and let the people self-organize.  So, do we just let voters sort themselves into $k$ virtual districts and call it a day?</p>
+<p>Well, no.  Suppose there are 1,000 voters, 400 of which are in the minority party, and 10 virtual districts.  It will require at least 51 out of 100 votes in a district to win a seat.  A well organized majority party could immediately place 60 voters in each virtual district and win all of them!  Zero is far fewer than our objective of at least 4 seats for the minority party in this case.  We need to solve an adversarial problem and assume that any system we propose will be exploited if possible.</p>
+<h2 id="the-solution">The solution</h2>
+<p>Here’s how we will avoid this sort of issue:</p>
+<p>Have two rounds of self-organization.  Start with $2 \times k$ virtual districts, each up to a limit of $n/k$ voters and which voters can voluntarily join.  After a deadline, eliminate the least populous $k$ virtual districts from the first round, and let each of the displaced voters join one of the remaining $k$ districts with available capacity in the second round.  Does this achieve our goal?</p>
+<p>First, let’s revisit the illustrative example from above.  Does the majority party have the ability to guarantee the minority party has less than 4 seats in that example?  No.  If they place 60 voters in each of 10 virtual districts in the first round, the minority party members have the freedom to move to other open districts (there would be 10 empty ones), and the majority party doesn’t have enough members to place over 50 members in each of the $2 \times k$ virtual districts, since that would require more than $2 \times 10 \times 50 = 1,000$ members (in fact, it would require at least 1,010 to avoid ties).  In other words, it would require more members than total voters to guarantee a majority in each of the first round virtual districts.  Meanwhile, the minority party could try to stack itself into 4 virtual districts with 100 each and guarantee victory in them.</p>
+<p>But would the majority party let them do that?  Let’s make some more assumptions before proceeding. First, let’s assume that voter virtual district choices can be centrally coordinated by the party.  Also, we’ll give the option to the majority party move first in each round, and each party can respond instantaneously to the other party’s moves.  In other words, we won’t allow a party to run out of time before the round 1 or round 2 deadlines to execute their strategy.  Finally, we’ll suppose that each voter’s party affiliation is visible, such that both parties know the party affiliation counts within each district.</p>
+<p>Let’s examine some possible strategies.  Suppose the majority party spreads themselves evenly across the districts.  This won’t help them: they would have 30 members in each of the 20 districts, while the minority party would stack up with 70 each in 5 districts and 50 in the 6th.  All of those districts would survive the first round (10 of the districts with only 30 voters from the majority party would be removed and need to reallocate), with the minority party able to win 5 seats and a tie for the 6th, earning overrepresentation.</p>
+<p>Let’s start again: suppose the majority party spreads themselves evenly with 30 in each of the 20 districts, and the minority party places themselves with 51 each in 7 districts and the remaining 43 in an 8th district.  Could the minority party win 7 districts this way if the majority party is allowed to respond?  No, because the majority party would see the minority party’s move and shift its voters out of those 7 districts and into 10 open districts with 60 members each, causing all the minority party districts to be cut after the first round, unless they reallocate further.  How could they reallocate to avoid this?  They could try reallocating to 6 districts with 61 members in each (and some members who would lose the 7th), but they know the majority party will react again.  Taken to its logical conclusion, the minority party would simply stuff 4 districts with 100 voters each to guarantee securing 4 virtual districts in the first round, while the majority will take the other 6, which is perfectly in line with their proportion.  The excess districts and mobility guarantee an inability to take more districts than a party’s proportion (to the precision of a rounded partial district).</p>
+<h2 id="endgame">Endgame</h2>
+<p>So what would happen?  A premise of game theory is that participants can reason through future moves and opponent responses.  In this case, having double the virtual districts in round one and facing reallocation of the lowest half of districts by population makes it impossible to suppress the other’s representation: the other side can always find enough space to take majority in at least $\left\lfloor(m \times k) \right\rfloor$ districts, so each side must be focused on not <em>losing</em> their fair share due to the culling of least populated districts.  The only way to guarantee at least $\left\lfloor (m \times k) \right \rfloor$ for the minority and $\left\lfloor((1 - m) \times k) \right\rfloor$ for the majority is for both sides to fill up as many districts as they can fully.</p>
+<p>We’ve created a 2-player, fixed-sum deterministic game of perfect information.  This <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.youtube.com/watch?v=EqcSEKRtklE&amp;list=PLPhC147aCdDHQyAxcFYR1HSDtYlL0ARSI&amp;index=9">leads us to minimax strategies</a>, and the first round culling mechanism prevents one party from locking in more districts than their fair share.</p>
+<p>In some cases when the party membership does not evenly fill an integer number of districts, the minority party can achieve $\left\lceil (k \times m) \right\rceil$, but this depends on the specific numbers of the situation.  For instance, with 10 districts, 99 voters in the minority party and 901 in the majority party, the minority would place 99 in a district and the majority would place 99 voters in 9 districts and only have 10 left over for a 10th, which is not enough to cull the minority district after round 1.  One district is higher than $\left\lfloor(m \times k) \right\rfloor = 0$.   On the other hand, with 10 districts, 949 voters in the majority and 51 in the minority, the minority will put their 51 voters in a single district and the majority party can place at least 94 voters in 10 districts in round 1 to force a culling of the minority district.  In the general case, if there would be a split district, the majority will win the extra district if</p>
+<p>$$
+(1-m)n / \left\lceil (1-m)k \right\rceil &gt; (1-m)n / \left\lceil (m)k \right\rceil
+$$</p>
+<p>In other words, if the majority party has more voters per district while extending itself to capture the remaining district than the minority party does while trying to extend itself for the remaining district, it can avoid getting culled and win the district.  Vice versa for the minority party.  Any attempt at extending to grab extra districts by a party will result in a countermove to cull districts of the greedy party and they will have <em>less</em> than their fair share as a result.</p>
+<p>It should also work for any number of parties.  The key is having double the districts in round one such that, no matter a party’s majority or even a <em>coalition’s majority</em>, they can’t impose their will on any party with a sufficient number of voters.  If people just want to vote along party lines, they can always achieve at least $\left\lfloor (k \times p_i) \right\rfloor$ where $p_i$ is their proportion of the state’s voters.</p>
+<h2 id="realistic-assumptions">Realistic assumptions?</h2>
+<p>For the endgame to work out as desired, we had to make an assumption about perfect information to get minimax behavior.  This means that both parties knew what state they were in; in other words, they knew the number of voters from each party in each virtual district.  Today, we know they must have pretty good information about party affiliation, because they use it for effective gerrymandering.  The other assumption to make this work is that the party was centrally coordinating the voter movements of its members.  That also seems like a fine approximation; either the voters could have given the party permission to sign up for virtual districts, or they are given instructions centrally by the parties.  That’s not much of a stretch, considering how much the parties invest in campaign operations already.</p>
+<p>Perhaps the biggest disconnect from real life is the assumption of voter participation.  Not all eligible voters will participate in the process, so we would need to randomly assign voters who do not participate at the end, and this would also weaken a party’s ability to obtain its share of districts if its members are less active than the other’s.</p>
+<p>We could also expect parties to start engaging in deception with respect to party affiliation to violate the &quot;perfect information&quot; assumption.</p>
+<h2 id="even-better-in-practice">Even better in practice?</h2>
+<p>Above, we have assumed that voters just want to vote along party lines.  In practice it might lead to even richer coalitions and more accurate, issue-based representation.  One could imagine the moderate members of two parties forming a coalition to advance some shared goal in a virtual district.  For instance, imagine members of both parties join a district and agree that some small number of issues are their top concerns.  They announce that they will be voting for whichever candidate can best deliver on their top three concerns.  Eligible candidates who most closely line up with those goals would enter that race, and ones that do not would find better fits for them.</p>
+<p>If issue-based, cross-party coalitions form, then we may not be so worried about party representation.  But the $2 \times k$ districts still serve a useful purpose in round 1, in that it gives an opportunity for grassroots coalitions to form and to see which issues have enough support to warrant representation.  If a cause can’t gather enough voters, that’s a signal to them that their issues aren’t as important to others, and they can seek to join some other coalition with enough support that suits them.</p>
+<h2 id="continuity-between-elections">Continuity between elections</h2>
+<p>In repeated elections, it would make sense to start voters in their virtual districts from the previous election.  If a coalition is happy with their representative, they can have continuity.  But we would add another $k$ empty districts to start round 1 again.  So if members of some virtual districts are unhappy, they can disband and disburse to new virtual districts.  Plus, inevitably, a state will have residents who left or joined the state since the last election, so spots in existing districts will open up and new residents will have to be placed.</p>
+<h2 id="some-extreme-viewpoints">Some extreme viewpoints?</h2>
+<p>One consequence of virtual districts would be that larger states with more Congressional seats could lead to more extreme viewpoints.
+For instance, California has 52 seats, New York has 45, and Texas has 38.
+This means that it would take less than 3% of a state’s population to form a virtual district, and it’s more likely this would lead to what others would perceive as extreme viewpoints winning Congressional seats.  However, these extreme viewpoints would still be marginalized in the context of a large Congress.  So those people may be accurately represented, but they will be unlikely to move the needle on policy.</p>
+<h2 id="missing-the-original-purpose">Missing the original purpose?</h2>
+<p>Would we be missing the point of Congressional districts if we removed the locality of them?  An original intent of Congressional districts was to ensure that the people would have representatives familiar with their local concerns.  However, as can be seen by the extreme gerrymandering examples, some Congressional districts stretch the definition of local communities already.  Plus, not all people in a locality necessarily agree on federal policy anyway, and those who vote for the losing candidate probably don’t feel well represented.  And of course, nothing would stop a local community from trying to form a virtual district on their own anyway; the difference is that they would be drawing the boundary themselves, and it would be opt-in for voters.</p>
+<p>One drawback I can think of is when regional representation is more important than issue representation, like after natural disasters or accidents that the federal government can address.  In such cases, virtual districts may dilute regional representation even more than gerrymandering.</p>
+<h2 id="realistic-solution">Realistic solution?</h2>
+<p>Might this happen in real life?  Probably not, because the party in power of a state’s districts will not want to give up gerrymandering power, and it seems unlikely that the beneficiaries of gerrymandering in Congress will pass a federal law to ban it.  Also, there may be questions of whether such a scheme is too complex for some voters to navigate or understand.  But it's interesting to think of solutions that could work better in theory.  And if it had enough support behind it, who knows what might happen.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 

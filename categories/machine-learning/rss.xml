@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - Machine Learning</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/categories/machine-learning/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Mon, 15 Jul 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Book Review: Information Theory, Inference, and Learning Alogrithms</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Mon, 15 Jul 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Machine Learning]]></category>
+          <category><![CDATA[Statistics]]></category>
+          <category><![CDATA[Information Theory]]></category>
+          
+          
+          <category><![CDATA[book review]]></category>
+          
+          <link>https://dfd.github.io/mackay-itila/</link>
+          <guid>https://dfd.github.io/mackay-itila/</guid>
+          <description><![CDATA[Overview
+David MacKay's classic textbook Information Theory, Inference, and Learning Algorithms was first published in 2003, and yet it holds up very well over 20 years later, seamlessly weaving together concepts across compression, noisy-channel coding, Bayesian statistics, and …]]></description>
+          <content:encoded><![CDATA[<h2 id="overview">Overview</h2>
+<p>David MacKay's classic textbook <a rel="noopener nofollow noreferrer" target="_blank" href="http://www.inference.org.uk/mackay/itila/book.html">Information Theory, Inference, and Learning Algorithms</a> was first published in 2003, and yet it holds up very well over 20 years later, seamlessly weaving together concepts across compression, noisy-channel coding, Bayesian statistics, and neural networks.  By the end, a diligent reader will have a very good understanding of fundamentals that are vital to more advanced work in Bayesian statistics and deep learning.</p>
+<h2 id="a-unique-perspective">A unique perspective</h2>
+<p>MacKay uniquely presents the material, drawing parallels between seemingly distinct topics.  As he states in Chapter 2, &quot;One of the themes of this book is  that data compression and data modeling are one and the same, and that they should both be addressed... using inverse probability.&quot;</p>
+<p>One chapter presented a unique idea for model comparison using Occam's Razor.  He presents an &quot;Occam's Factor&quot; which &quot;provides the ratio of the poterior accessible volume of $\mathcal{H}_i$'s hypothesis space to the priori accessible volume, or the factor by which $\mathcal{H}_i$'s hypothesis space collapses when the data arrive.&quot;  It's logarithm &quot;is a measure of the amount of information we gain about the model's parameters when the data arrive.&quot;</p>
+<p>So models with many parameters and few constraints will be penalized by a stronger Occam's factor than a simpler model because they had too much &quot;wiggle room&quot; to overfit the data.  It's similar in spirit to AIC or BIC, except it can be applied to the full distributions over parameters, as opposed to just the maximium likelihood point estimation models.  Later he goes so far as to say it can be used as a substitute for validation sets in Bayesian machine learning.  I'm not sure I'm ready to commit to that, but I'm interested to explore it further.  It seemes like it could be gamed.  For instance, if you know of an overfit model and its parameter values for a set of training data, and you then set your priors to be equal to these, then the parameters wouldn't change and the Occam's Factor of that model would be small.  So this seems to be relying on restricting oneself to truly using priors before seeing the data.</p>
+<h2 id="diverse-topics">Diverse topics</h2>
+<p>As if the diversity of high level topics weren't enough, perhaps the most interesting sequence in the book are chapters 18 and 19.  He applies the tools from the Information Theory section first to crossword puzzles, and then presents a simplified version of the <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Cryptanalysis_of_the_Enigma">Enigma Code breaking done at Bletchley Park</a>.  Finally, he ends the section with an information theoretic point of view on the benefits of sexual reproduction with recombination using both analytical and simulation methods.</p>
+<h2 id="relevance-to-nlp-and-deep-learning">Relevance to NLP and deep learning</h2>
+<p>Even in Claude Shannon's original paper that introduced information theory, <a rel="noopener nofollow noreferrer" target="_blank" href="https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">A Mathemetical Theory of Communication</a>, he presented language models.  And if one studies natural language processing today, it's still filled with concepts from information theory.  Although this book came out 14 years before the transformer architecture was introduced in <a rel="noopener nofollow noreferrer" target="_blank" href="https://research.google/pubs/attention-is-all-you-need/">Attention is All You Need</a>, it will give readers an outstanding foundation from which to study modern approaches.  I worry too many practitioners just take the shortest path to the latest architectures without building the requisite knowledge first.</p>
+<p>I also like how he distills neural networks into their architecture, activity rule, and learning rule.  The architecture specifies the variables and relationships within the network; the activity rule details how the outputs of neurons change in response to each other; the learning rule defines how to update weights during training.</p>
+<p>One other topic I found particularly interesting was on the information capacity of a single neuron (and relating it back to VC dimension), as well as the capacity of Hopfield networks.  Walking through these analyses gives the reader building blocks for reasoning about the capacity of larger, more complex networks.</p>
+<p>While it's true that the Bayesian methods for which MacKay advocates are not the dominate paradigm used in deep learning today, the probabilistic perspective is broad enough to interpret parameters with point estimates.  Regularization and drop out also have Bayesian interpretations.</p>
+<h2 id="comparison-to-frequentist-methods">Comparison to frequentist methods</h2>
+<p>MacKay mostly focuses on presenting the material at hand, but occasionally contrasts to frequentist methods.  One example comes in Chapter 24, where he discusses the estimators for $\sigma$ in a Gaussian distribution.  As he states:</p>
+<p>Given data $D = \{x_n\}_{n=1}^N$, and 'estimator' of $\mu$ is</p>
+<p>$$
+\bar{x} \equiv \sum_{n=1}^N x_n / N,
+$$
+and two estimators of $\sigma$ are:
+$$
+\sigma_N = \sqrt{\frac{\sum_{n=1}^N (x_n - \bar{x})^2}{N}}
+\;\text{and}\;
+\sigma_{N-1} = \sqrt{\frac{\sum_{n=1}^N (x_n - \bar{x})^2}{N-1}}
+$$</p>
+<p>He discusses how they invent estimators in the frequentist paradigm and choose the one that best meets some criteria of sampling properties.  After pointing out that there is no clear principle for deciding which criterion to use, and given most criteria, there's no systematic way to produce an optimal estimator, he then explains the frequentist interpretation of these estimators.  The estimator $(\bar{x}, \sigma_N)$ is the maximum likelihood estimator, but $\sigma_N$ is biased.  That is, averaging over repeated sampling, $\sigma_N$ will not equal to $\sigma$.  The $\sigma_{N-1}$ version is unbiased.</p>
+<p>In contrast, the Bayesian view arrives at these quantities as maximum a posteriori estimates of $\sigma$ with different conditioning.  The maximum of $P(\sigma | D)$ is at $\sigma_{N-1}$ and the maximum of $P(\sigma | D, \mu = \bar{x})$ is $\sigma_N$, using uninformative priors.  In other words, $\sigma_{N-1}$ is when we are jointly estimating our uncertainty in $\mu$ and $\sigma_N$ is when we hold $\mu$ fixed at $\bar{x}$.  There are nice supporting visuals on page 321.</p>
+<p>One of the more lively and entertaining chapters is 37, <em>Bayesian Inference and Sampling Theory</em>.  In this short chapter, he offers very simple examples to demonstrate that frequentist methods calculate unhelpful quantities to the decision at hand or are sensitive to irrelevant information.</p>
+<h2 id="nitpick">Nitpick</h2>
+<p>Perhaps the one thing I didn't care for in the book was the early insistence on approximating $x!$ and ${n \choose x}$, which seemed like a bit of an unnecessary distraction.  This did not last long, however.</p>
+<h2 id="problems">Problems</h2>
+<p>The book offers a lot of problems, each with a difficulty rating between 1 and 3 next to it.  Some of the problems are quite challenging.  I recognized one problem as being a slight reframing of a <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/William_Lowell_Putnam_Mathematical_Competition">Putnam</a> A6 question, and it was only marked with a difficulty of 2.  Luckily, he also marked a small portion as recommended problems, and these problems were thoughtfully chosen to reinforce the content.</p>
+<h2 id="recommendation">Recommendation</h2>
+<p>Overall, I see this book as being a good one to read after Kevin Murphy's <a href="https://dfd.github.io/probabilistic-machine-learning/">Probabilistic Machine Learning</a>.  They draw from a similar perspective, but MacKay's goes deeper within what it covers.</p>
+<p>So my recommendation is to read the whole book, after PML, and do all of the recommended problems.  The book is comprised of 50 relatively short chapters.  I think readers could alternate between reading a chapter and then doing its recommended problems, and complete the book in 100 days without much problem.  Very motivated readers could probably finish in 50 days by reading a chapter and completing the problems each day.  Consider it a &quot;must read&quot; if you want to go deep into NLP.</p>
+]]></content:encoded>
+      </item>
+      <item>
+          <title>Book Review: Probabilistic Machine Learning: An Introduction</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Sat, 30 Mar 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Machine Learning]]></category>
+          
+          
+          <category><![CDATA[book review]]></category>
+          
+          <link>https://dfd.github.io/probabilistic-machine-learning/</link>
+          <guid>https://dfd.github.io/probabilistic-machine-learning/</guid>
+          <description><![CDATA[<p>I'm surprised people aren't making a bigger deal about Kevin Murphy's new textbooks, the first of which I'll review here.</p>
+]]></description>
+          <content:encoded><![CDATA[<p>I'm surprised people aren't making a bigger deal about Kevin Murphy's new textbooks, the first of which I'll review here.</p>
+<span id="continue-reading"></span><h2 id="overview">Overview</h2>
+<p><a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/book1.html">Probabilistic Machine Learning: An Introduction</a> covers an incredible breadth and surprising depth of machine learning and statistics topics.  It can be thought of as a &quot;best of&quot; from <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf">Bishop</a>, <a rel="noopener nofollow noreferrer" target="_blank" href="http://www.inference.org.uk/mackay/itila/">MacKay</a>, <a rel="noopener nofollow noreferrer" target="_blank" href="https://hastie.su.domains/ElemStatLearn/">The Elements of Statistical Learning</a>, and others, along with a view of recent, relevant research, all of which is pulled together under a probabilistic persepctive and consistent notation.  The book is almost entirely self-contained, with an extensive <em>Foundations</em> section covering most prerequisite topics<sup class="footnote-reference"><a href="#prereqs">1</a></sup> before moving on to linear models, deep neural networks, nonparametric models, unsupervised learning, and a few other topics.</p>
+<h2 id="clear-exposition">Clear exposition</h2>
+<p>The book takes a Bayesian view of probability (that we can treat all unknown quantities, such as future outcomes and parameters, as random variables and model them with probability distributions) and applies it to statistical and machine learning models.  In doing so, Murphy is able to apply a consistent framework and common concepts across a very wide range of topics, regardless of how they were originally motivated or conceived.  This approach turns the exploration of various models into a seamless composition of building blocks, rather than a series of jumps between the origin stories of each model. </p>
+<p>Perhaps surprisingly, the book manages to cover the most important<sup class="footnote-reference"><a href="#important">2</a></sup> concepts one would encounter in graduate statistics coursework.  In fact, even after exiting the aforementioned <em>Foundations</em> section, it spends a good chunk of the book on linear models, much of which would overlap with a statistics curriculum.  This is helpful for two reasons:</p>
+<ol>
+<li>First, it's important to apply the right tool for the job.  While complex ML models increasingly do amazing things, there are still many applications and contexts when we need the imposed structure of GLMs and other simpler models.</li>
+<li>More importantly, it introduces the structure of Murphy's approach, which extends naturally from the <em>Foundations</em> section, to relatively simple models before moving on to more complex topics.  This allows the reader to more easily adapt and generalize the framework.</li>
+</ol>
+<p>A common pattern is:</p>
+<ol>
+<li>Motivate  the model and define the likeliihood, such as
+$$
+p(y| \mathbf{x}; \mathbf{\theta}) = \text{Ber}(y|\mathbf{\sigma}(\mathbf{w}^\intercal \mathbf{x} + b))
+$$
+in the case of logistic regression, adding definitions, priors, or nested functions if applicable.</li>
+<li>Define and derive the objective function, such as the negative log likelihood.</li>
+<li>Show how the optimization of this objective is done in practice.</li>
+</ol>
+<p>The book extensively borrows from earlier textbooks and papers for explanations, figures, and problems, always with proper attribution. In fact, it may have the most citations per page I've encountered.  Murphy has meticulously adapted the clearest plots and explanations for each subject and selected problems that provoke deep insights into the material.  Additionally, the extensive use of self-references within the book help to facilitate refreshing an earlier topics as needed.</p>
+<h2 id="practical-theory">Practical theory</h2>
+<p>In practice, I find the the probabilistic perspective to be much more useful than the theory emphasized in some other ML books.  For instance, while I understand the role of <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Vapnik%E2%80%93Chervonenkis_dimension">VC-dimension</a> and <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Probably_approximately_correct_learning">PAC learning</a> in the development of statistical learning theory, I'm rarely utilizing those ideas in applied work.<sup class="footnote-reference"><a href="#SLT">3</a></sup>  Murphy's book explains them in under two pages, while some other books devote entire chapters to each of these concepts.</p>
+<p>Also, as he notes, the probabilistic perspective lends itself to optimal decision making and is shared across science and engineering disciplines, which is what helps fuel the breadth of the two books.</p>
+<h2 id="breadth-and-depth">Breadth and depth</h2>
+<p>Have a look at the <a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/toc1.pdf">table of contents</a>.  I don't know of another textbook that covers linear Gaussian systems, GLMs, and transformers, not to mention Gaussian processes, factorization machines, and graph embeddings (plus the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pml2-book/blob/main/toc2-long-2023-01-19.pdf">even longer sequel book on &quot;advanced topics&quot;</a> <em>and</em> the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pml-book/blob/main/supp2.md">supplemental material</a> to that!).  The power of his approach is that it allows him to write succintly, yet clearly and precisely, on a variety of subjects, adding color and intuition when needed.</p>
+<p>The book examines the most crucial and fundamental topics, offering detailed proofs and derivations, unveiling important results, and comparing the performance of competing methods across various problems. For example, linear regression methods are thoroughly explored over forty pages. Furthermore, the text dedicates three chapters to deep neural networks, addressing structured data, images, and sequences specifically. In contrast, it touches briefly on many specialized and niche topics, subsequently directing readers to one or more citations for further investigation.</p>
+<h2 id="source-code">Source code</h2>
+<p>While the text focuses on the theory, concepts, and math, Murphy makes available the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pyprobml/tree/master/notebooks/book1">code to reproduce most of the figures</a>.  This often includes experiments and model fitting, for those who want to try out models from the book.  I have not used the code much myself, although I did find <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pyprobml/issues/1113">an issue with the mixture of linear experts code</a>.</p>
+<h2 id="corrections">Corrections</h2>
+<p>I preordered a hard copy of the first printing and, while meticulously working through it, encountered several typos, some even within the mathematical content.  For each typo discovered, I referred to the  <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pml-book/releases/latest/download/book1.pdf">latest draft version</a> to verify if it had already been corrected.  Many had been previously identified and fixed, yet I was still able to report <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pml-book/issues?q=is%3Aissue+author%3Adfd+">several new ones</a>, all of which were subsequently addressed.  Contributing in this way to such an important book was an unexpected perk.</p>
+<p>In a weird way, the typos actually enhanced my experience, since catching them was a nice way to validate I understood the material well (your mileage may vary).  Collecting corrections via github probably increased reader participation, and I would assume the current draft is in great shape as a result.</p>
+<h2 id="recommendation">Recommendation</h2>
+<p>Probabilistic Machine Learning is one of two introductory ML textbooks I would recommend.  I think its perspective is the perfect complement to the inductive bias<sup class="footnote-reference"><a href="#inductive">4</a></sup> lens found in Tom Mitchell's classic <a rel="noopener nofollow noreferrer" target="_blank" href="http://www.cs.cmu.edu/~tom/mlbook.html">Machine Learning</a> textbook.</p>
+<p>If you're looking to develop expertise in machine learning, I recommend going through this book cover to cover and attempting each problem provided.  You might not be able to solve them all, so time box each attempt.  You can check <a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/solns-public.pdf">solutions to many of the problems</a>, but give each of them a shot on your own first.</p>
+<p>I was able to move through it relatively quickly, but it helped that I already had graduate degrees focused on statistics and machine learning.<sup class="footnote-reference"><a href="#experience">5</a></sup>  If you find some of your math background is shaky or that the <em>Foundations</em> section is too dense, there are plenty of online resources available to help out.  I particularly like the <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.coursera.org/specializations/mathematics-machine-learning">Mathematics for Machine Learning</a> course from Imperial College London for linear algebra and multivariate calculus.  If you need to supplement with such outside sources, I would still use the structure within PML to guide what specific topics to brush up on, rather than committing to an endless math curriculum before moving on to ML.  This would also be an ideal book for readers with a Bayesian statistics background to dive into machine learning, since they will be familiar with the framing.</p>
+<p>If you find a particular subject interesting, grab the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/probml/pyprobml/tree/master/notebooks/book1">associated code</a> and apply it to some new problems or run experiments.  If you feel like you've mastered a chapter of the book, try to generate data sets that deliberately demonstrate the comparative strengths or weaknesses of the models within it.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This has become my go-to reference on ML.  Whenever I encounter a question about ML or need to refresh my memory on a topic, I usually go straight to this book (or <a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/book2.html">its sequel</a>) over google, wikipedia, or other books.</p>
+<p>For a  long time, it's been common for study groups to read through <a rel="noopener nofollow noreferrer" target="_blank" href="https://hastie.su.domains/ElemStatLearn/">ESL</a> together while learning ML.  I think some of its sections are good, but it never appealed to me in the same way and relies too much on null hypothesis testing and p-values for my taste.  <em>Probabilistic Machine Learning</em> now offers a better, modern alternative to cultivate a way of thinking that extends well beyond what many people narrowly think of as &quot;machine learning.&quot;</p>
+<p>The book is <a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/book1.html">freely available online</a>; however, considering its extensive length, opting for a hard copy allows for a much-needed respite from computer screens.  You can <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.amazon.com/Probabilistic-Machine-Learning-Introduction-Computation/dp/0262046822">purchase it here</a>.  And if you want to hear more about the author's perspective, you <a rel="noopener nofollow noreferrer" target="_blank" href="https://learnbayesstats.com/episode/68-probabilistic-machine-learning-generative-models-kevin-murphy/">can listen to a podcast interview here</a>.</p>
+<p>I also have the <a rel="noopener nofollow noreferrer" target="_blank" href="https://probml.github.io/pml-book/book2.html">second book</a>, but haven't yet had time to read it (although I've already used it as a reference on several topics).  Hopefully I will start it later this year.</p>
+<h2 id="footnotes">Footnotes</h2>
+<div class="footnote-definition" id="prereqs"><sup class="footnote-definition-label">1</sup>
+<p>The book assumes knowledge of basic set theory and calculus, and comfort with math notation will help, although there is an appendix for that.  It <em>very briefly</em> covers derivatives and matrix calculus, so that might be challenging for someone new to those subjects.  Integration is not covered within the book, so I think it's fair to say that a reader should know calculus well before starting.</p>
+</div>
+<div class="footnote-definition" id="important"><sup class="footnote-definition-label">2</sup>
+<p>While it briefly describes null hypothesis testing, it does not <a rel="noopener nofollow noreferrer" target="_blank" href="https://speakerdeck.com/rmcelreath/statistical-rethinking-2023-lecture-01?slide=28">devolve into various statistical tests</a>.  I said <em>important</em>, not <em>common</em>.</p>
+</div>
+<div class="footnote-definition" id="SLT"><sup class="footnote-definition-label">3</sup>
+<p>These concepts may help develop an intuition about machine learning, but they are certainly not the concepts I start with when facing a new prediction problem.</p>
+</div>
+<div class="footnote-definition" id="inductive"><sup class="footnote-definition-label">4</sup>
+<p>Inductive bias describes how a learning algorithm conducts its search over a hypothesis space, and can be further broken down into restriction bias (which hypotheses are considered) and preference bias (which hypotheses are preferred) for analysis.  Mitchell's book covers much more than this, of course, but it's the unique aspect I find most useful.</p>
+</div>
+<div class="footnote-definition" id="experience"><sup class="footnote-definition-label">5</sup>
+<p>Even with this background, I still learned quite a bit from the book.</p>
+</div>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 

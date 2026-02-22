@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - Causal Inference</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/categories/causal-inference/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 17 Mar 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Book Review: Probably Overthinking It</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Sun, 17 Mar 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Statistics]]></category>
+          <category><![CDATA[Causal Inference]]></category>
+          
+          
+          <category><![CDATA[book review]]></category>
+          
+          <link>https://dfd.github.io/probably-overthinking-it/</link>
+          <guid>https://dfd.github.io/probably-overthinking-it/</guid>
+          <description><![CDATA[Overview
+Allen Downey’s Probably Overthinking It describes and resolves a number of statistical fallacies and paradoxes in an accessible way.  The subtitle is How to use data to answer questions, avoid statistical traps, and make better decisions, and an overarching theme is the …]]></description>
+          <content:encoded><![CDATA[<h2 id="overview">Overview</h2>
+<p>Allen Downey’s <a rel="noopener nofollow noreferrer" target="_blank" href="https://greenteapress.com/wp/probably-overthinking-it/">Probably Overthinking It</a> describes and resolves a number of statistical fallacies and paradoxes in an accessible way.  The subtitle is <em>How to use data to answer questions, avoid statistical traps, and make better decisions</em>, and an overarching theme is the various ways sampling bias can impact inference.  He illustrates the issues visually, demonstrates each with multiple examples, and shows adjustments that can overcome and explain them.</p>
+<p>This book is well suited for data scientists, analysts, and mathematically inclined consumers of quantitative analyses.  While a background in probability and statistics would help get more out of the book, it’s not particularly technical; Downey does not dive deeply into the mathematical details, leaving much of the explanation to well designed plots and stories that accompany them.  It’s primarily a book on how to <em>reason</em> about observational data and evaluate models.</p>
+<p>Having read <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/">Downey’s blog</a> (and <a rel="noopener nofollow noreferrer" target="_blank" href="http://allendowney.blogspot.com/">his previous blog</a> before that) for the past 12 years or so, I was familiar with many themes in the book, although some of the examples were new.  Topics include (among others) the <a rel="noopener nofollow noreferrer" target="_blank" href="http://allendowney.blogspot.com/2015/08/the-inspection-paradox-is-everywhere.html">Inspection Paradox</a>, <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2021/04/07/berkson-goes-to-college/">Berkson’s Paradox</a>, <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2021/05/25/in-search-of-simpsons-paradox/">Simpson’s Paradox</a>, and the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/AllenDowney/BiteSizeBayes/blob/master/05_test.ipynb">base rate fallacy</a>.</p>
+<h2 id="what-makes-the-book-unique">What makes the book unique</h2>
+<p>One thing I like about the book is its emphasis on choosing appropriate probability distributions and plotting methods.  Students tend to come out of university statistics courses overemphasizing the Gaussian distribution, and a big lesson from this book is that the choice of distribution can matter a lot to a model’s quality and the decisions it informs. He also explains circumstances under which the Gaussian distribution <em>is</em> an appropriate choice and how to compare the fit of different modeling distributions.  He does quite a bit of modeling with the log-normal distribution, which I've used extensively in industry, and even the log-t distribution, which I've also applied in practice. </p>
+<p>The book also focuses on comparing model predictions to observable data, rather than on parameters, standard errors, or hypothesis tests.  This is done with widespread use of ECDFs and <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2022/10/03/the-long-tail-of-disaster/">log-log complementary CDFs when we want to emphasize tail behavior</a> (these are <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.cs.cmu.edu/~christos/courses/826-resources/PAPERS+BOOK/0412004-newman05.pdf">widely used for power law distributions</a>, often found in networks).  It also touches on survival analysis, which many analysts and data scientists don’t seem to encounter in school.</p>
+<h2 id="most-interesting-chapters">Most interesting chapters</h2>
+<p>Perhaps the most interesting topic is Berkson’s Paradox, for which the following example is given:</p>
+<ul>
+<li>Babies of mothers who smoked were about 6% lighter at birth</li>
+<li>Smokers were about twice as likely to have babies lighter than 2,500 grams, which is considered “low birthweight”</li>
+<li>Low-birthweight babies were much more likely to die within a month of birth</li>
+<li>But the mortality rate of low-birthweight babies of smokers was lower than that of non-smokers</li>
+</ul>
+<p>This led some to conclude that smoking was protective for low-birthweight babies.  I won't spoil the solution here, but he posted <a rel="noopener nofollow noreferrer" target="_blank" href="https://docs.google.com/presentation/d/e/2PACX-1vRfp93z9-0v4d4xbhw73zgBO-oz0QMguXrBCUI3JQsmpv2RzUDlClyRS2kZMy-EMZTCYI-38HNMrPSP/pub?start=false&amp;loop=false&amp;delayms=3000">some slides on the subject</a>.  The chapter also introduces causal diagrams, but they are only covered to the extent needed by the chapter.</p>
+<p>Another chapter I particularly enjoyed was <em>Chasing the Overton Window</em>, where he explains the following phenomena:</p>
+<ul>
+<li>People are more likely to identify as conservative as they get older.</li>
+<li>Order people hold more conservative views, on average.</li>
+<li>However, as people get older, their views do not become more conservative.</li>
+</ul>
+<p>Again, I won't spoil it, but you can see <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2023/04/24/the-overton-paradox/">some of his analysis here</a> and <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2022/11/09/chasing-the-overton-window/">watch a talk on it here</a>.</p>
+<p>Although Downey is a <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.allendowney.com/blog/2021/05/07/founded-upon-an-error/">card-carrying Bayesian</a>, the book doesn't emphasize Bayesian analysis, beyond the chapter on the base rate fallacy, which uses the <a rel="noopener nofollow noreferrer" target="_blank" href="https://allendowney.github.io/BiteSizeBayes/05_test.html">uncontroversial application of Bayes rule to diagnostic tests</a>, although I don't recall seeing the word &quot;Bayes&quot; at all.  An important point he makes is that information available before the test is important to establishing the relevant base rate, e.g. random screening implies a different base rate for a disease than someone being tested because of symptoms.  He then moves on to applying base rates to the <a rel="noopener nofollow noreferrer" target="_blank" href="https://arxiv.org/abs/1707.01195">fairness impossibility theorem</a>.</p>
+<p>Another interesting chapter I'll mention was about the inspection paradox.  He gives several examples, but the most illustrative is about running a distance race.  A given runner will observe more runners who are either significantly faster or slower than themselves, but almost none who are running at about the same pace.  Not only does Downey do a nice job explaining why this occurs, but also shows how to adjust for the sampling bias that leads to the paradox.  You can see a <a rel="noopener nofollow noreferrer" target="_blank" href="http://allendowney.blogspot.com/2015/08/the-inspection-paradox-is-everywhere.html">version of the analysis here</a>.</p>
+<h2 id="expanding-on-chapter-1">Expanding on Chapter 1</h2>
+<p>The basic premise of chapter 1 is that no one is “normal” (defined as being within 0.3 standard deviations of the average) with respect to even a modest number of bodily measurements or personality traits.  He shows through a couple of examples that very few people are &quot;normal&quot; on numerous metrics.  One specific example uses the Big Five personality traits, which we are told are roughly independent, and pretty well approximated by Gaussian distributions.  For each trait, he defines normal as being in the middle 20-28% of the distribution.</p>
+<p>He then presents data on the traits and normality within them and in combinations.  I'm combining some information from two tables here to show the percentage who are considered &quot;normal&quot; for each trait, followed by the counts and percentage of the total people who make it through each successive &quot;normal&quot; filter.</p>
+<table><thead><tr><th><strong>Trait</strong></th><th style="text-align: right"><strong>Pct &quot;Normal&quot;</strong></th><th style="text-align: right"><strong>Count</strong></th><th style="text-align: right"><strong>Pct Remain</strong></th></tr></thead><tbody>
+<tr><td>Extroversion</td><td style="text-align: right">23.4</td><td style="text-align: right">204,077</td><td style="text-align: right">23.4</td></tr>
+<tr><td>Emotional stability</td><td style="text-align: right">20.9</td><td style="text-align: right">46,988</td><td style="text-align: right">5.4</td></tr>
+<tr><td>Conscientiousness</td><td style="text-align: right">20.2</td><td style="text-align: right">10,976</td><td style="text-align: right">1.3</td></tr>
+<tr><td>Agreeableness</td><td style="text-align: right">21.1</td><td style="text-align: right">2,981</td><td style="text-align: right">0.3</td></tr>
+<tr><td>Openness</td><td style="text-align: right">28.3</td><td style="text-align: right">926</td><td style="text-align: right">0.1</td></tr>
+</tbody></table>
+<p>In other words, only 0.1% of those in the sample data are in a &quot;normal&quot; range in each trait.  There are at least two ways to explain why this is an expected result.</p>
+<p>The first is <a rel="noopener nofollow noreferrer" target="_blank" href="https://juanitorduz.github.io/exploring-the-curse-of-dimensionality-part-ii./">the curse of dimensionality</a>, which offers a geometric explanation for this.  Suppose each of $d$ traits were an independent standard Gaussian distribution.  The mean squared distance from the origin for points in the distribution is $d$, which follows from the <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Chi-squared_distribution">chi-squared distribution</a>.  In other words, the more independent traits we add, the further from the mean we expect a sampled point in the distribution to be.  And more to the point, as $d$ grows, the probability increases that at least one of the draws from the independent Gaussian traits will be far away from the mean.</p>
+<p>From a geometric point of view, if a point is far from the mean in any dimension, then we would say it is on the &quot;edge&quot; of the distribution.  The curse of dimensionality tells us that as $d$ grows large, eventually most of our data will be found on the edge of the data set, i.e. a value in at least one dimension for each point will be far from the mean (not &quot;normal&quot; aka &quot;weird&quot;).  And with enough dimensions, all data will be at an edge in approximately the same number of attributes.  Downey alludes to this idea when he writes, &quot;In the limit, if we consider the nearly infinite ways people vary, we find we are all equally weird,&quot; but without naming the concept directly.  So there may have been an opportunity to connect the chapter 1 lesson back to a more broadly applicable concept that readers may have heard about in other contexts of statistics or machine learning. See <a rel="noopener nofollow noreferrer" target="_blank" href="https://hastie.su.domains/ElemStatLearn/">section 2.5 of Elements of Statistical Learning</a> for more on the idea.</p>
+<p>A simpler reason this result is expected is that if you multiply roughly independent probabilities between 0.2 and 0.3, you can get a small probability quickly.  And the product gets smaller faster when the events are independent.  For instance, suppose we treat each of those percent normal for each trait as probabilities of independent events and just multiply them.  We would get the results in the far right of the following table, which isn't too much different from the actual results.</p>
+<table><thead><tr><th><strong>Trait</strong></th><th style="text-align: right"><strong>Pct &quot;Normal&quot;</strong></th><th style="text-align: right"><strong>Pct Remain</strong></th><th style="text-align: right"><strong>Pct if ⫫</strong></th></tr></thead><tbody>
+<tr><td>Extroversion</td><td style="text-align: right">23.4</td><td style="text-align: right">23.4</td><td style="text-align: right">23.4</td></tr>
+<tr><td>Emotional stability</td><td style="text-align: right">20.9</td><td style="text-align: right">5.4</td><td style="text-align: right">4.9</td></tr>
+<tr><td>Conscientiousness</td><td style="text-align: right">20.2</td><td style="text-align: right">1.3</td><td style="text-align: right">1.0</td></tr>
+<tr><td>Agreeableness</td><td style="text-align: right">21.1</td><td style="text-align: right">0.3</td><td style="text-align: right">0.2</td></tr>
+<tr><td>Openness</td><td style="text-align: right">28.3</td><td style="text-align: right">0.1</td><td style="text-align: right">0.1</td></tr>
+</tbody></table>
+<p>Notice this result does not have anything to do with being &quot;normal&quot; or any concept of distance at all.  We could have been talking about the probabilities of being in the farthest left portions of the trait distributions, or simply assigned the probabilities to a set of independent Bernoulli trials.  To simplify further, let's suppose the probability of being &quot;normal&quot; for any trait is $p$.  Then the probability that an instance is normal in all $d$ independent traits is just $p^d$, which will become very small as $d$ grows large, if $p \lt 1$.  Here, we can get roughly the same result by setting $p=0.234$ for each of 5 indepdent traits.</p>
+<h2 id="verdict">Verdict</h2>
+<p>Overall, I recommend this book to producers and consumers of data analysis to learn a useful set of concepts through examples.  At the very least, readers will learn to ask good questions with respect to common issues in observational data analysis, and readers with the right background may learn some new methods to apply.  While it eschews the technical density of a textbook, it demands more intellectual engagement than a typical pop science book, drawing readers in with its broad scope of topics and colorful storytelling.</p>
+<p>All the notebooks used to generate the analyses and plots are <a rel="noopener nofollow noreferrer" target="_blank" href="https://allendowney.github.io/ProbablyOverthinkingIt/intro.html">available here</a>, which can aid practitioners looking to apply the lessons to their own work.  You can <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.amazon.com/Probably-Overthinking-Questions-Statistical-Decisions/dp/0226822583">buy the book here</a>, and he also has a number of high quality technical books <a rel="noopener nofollow noreferrer" target="_blank" href="https://greenteapress.com/wp/">available for free here</a>.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 

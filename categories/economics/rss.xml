@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - Economics</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/categories/economics/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Wed, 18 Feb 2026 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>A Solution to the Deluge of Bug Bounty and FOSS AI Slop Submissions</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Wed, 18 Feb 2026 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Development]]></category>
+          <category><![CDATA[Economics]]></category>
+          
+          
+          <category><![CDATA[solutions]]></category>
+          
+          <link>https://dfd.github.io/solution-ai-slop/</link>
+          <guid>https://dfd.github.io/solution-ai-slop/</guid>
+          <description><![CDATA[It seems many maintainers are drowning in AI submissions to bug bounties and FOSS contributions.  Many are frustrated by the volume of low quality PRs or submitters who don't seem to understand what they are submitting.
+Some maintainers are resorting to extreme measures or crying…]]></description>
+          <content:encoded><![CDATA[<p>It seems many maintainers are drowning in AI submissions to bug bounties and FOSS contributions.  Many are frustrated by the volume of low quality PRs or submitters who don't seem to understand what they are submitting.</p>
+<p>Some maintainers are resorting to <a rel="noopener nofollow noreferrer" target="_blank" href="https://etn.se/index.php/nyheter/72808-curl-removes-bug-bounties.html">extreme measures</a> or <a rel="noopener nofollow noreferrer" target="_blank" href="https://bsky.app/profile/akien.bsky.social/post/3meyerixvhs2p">crying out for help</a>.  One is attempting to set up a whole new system of <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/mitchellh/vouch">social trust</a> to address the issue.</p>
+<p>I'm happy to see experimentation in this area, and hope something shows efficacy and traction soon.  I want to throw another idea out into the ether that I think could help solve the problem.</p>
+<p>But first, let's analyze the problem:</p>
+<p>Generative AI coding has become very cheap.  Depending on how people use it, they either pay a flat fee, which gives them a marginal cost of zero to produce AI code (up to some usage limit) or they pay a very small “per token” fee.  In either case, the marginal cost of producing bug bounty submissions and open source pull requests has fallen to near zero, so people are doing much more of it.  It's not hard for someone to submit hundreds or thousands of submissions quickly with one of these subscriptions.  There was no cost to submit PRs or bug reports in the past, but it took a person's time, which is valuable.  But with LLMs, even that cost has shrunk dramatically.</p>
+<p>The potential benefits to submitters can vary.  For bug bounties, it's for a potential financial reward, and for PRs, it may be to help their reputation, resume, or to test a new AI bot they whipped up.</p>
+<p>Maintainers are annoyed at the low quality of submissions, in part because it's a cost (opportunity cost of their time) to review the PRs or bug bounty submissions.  It also crowds out reviews of new contributors who cannot be trusted by default.  For the purpose of this post, let's just take the maintainer's complaints as a given, and put aside any debate about whether AI could usefully help out.</p>
+<p>I believe there's a relatively easy solution to this: the maintainers can charge a small fee to submit PRs or bug bounties to their projects.  If the maintainers then believe the submission was made in good faith (whether they accept the submission or not), they should return the fee.  If they don't believe it was made in good faith, they keep it.  Maintainers have an incentive to return the fee to good faith contributors so that they continue to receive good quality submissions.  Submissions not addressed in a timely manner could be automatically refunded, and merged PRs could automatically result in a refund.</p>
+<p>That's it<sup class="footnote-reference"><a href="#integration">1</a></sup>.  That alone should greatly reduce AI slop submissions.  It takes something with a marginal cost near 0 and increases it enough to stop mass submissions of slop, because the submitters will risk losing money proportionally to the number of their slop submissions.  I don't know exactly where that price should be, maybe $1.  Maybe it varies by project.  It's hard to know what price will be enough to stop the slop deluge, but I don't think it would need to be too high to stop mass offenders, and I'm confident such a price exists.</p>
+<p>To avoid discouraging good submissions, the result of each submission should be transparent, and the display of the result of returning the fee or not should be outside the control of the maintainers.  This way, would-be contributors could audit their track record of returning the fees to good faith efforts.  Having some friction in the PR or bug bounty process will still risk lowering good faith submissions when the submitters are worried about losing their fee.  But we should expect that to mostly reduce lower quality good faith submissions (which have always been there, just not in large quantities), because they're the ones least confident in having their submissions viewed as good faith.</p>
+<p>One real life drag on such a system is that financial transactions normally come with small transaction costs.  So each project would need to decide who eats that cost.  I would guess that large, important projects would probably ask the submitters to eat it, and small projects who are desperate for help might volunteer to eat it.  Between that and the pricing, there's plenty of room to experiment.  Transaction costs are typically very small, and if it solves the problem, then it could easily be worth it.  To be clear, if a solution without transaction costs, like the <a rel="noopener nofollow noreferrer" target="_blank" href="https://github.com/mitchellh/vouch">vouch</a>, can work, than that is preferred.  I'm most confident my proposed solution would work well for bug bounties, where there are already financial transactions involved, and rewards at stake.</p>
+<p>No need to detect AI with more AI.  No worrying about AI slop submitters changing github usernames.  No need to close off projects or end bug bounties.  Just put a small, refundable cost to submitters, and watch the slop submissions drop dramatically.  Even if I'm wrong and it doesn't stop the problem, at least you can fund more maintainers to review the slop!</p>
+<h3 id="footnote">Footnote</h3>
+<p><sup class="footnote-reference"><a href="#integration">1</a></sup> I mean, &quot;that's it&quot; conceptually.  Building this application and integrating it with social coding platforms would take effort.  But they would be rewarded with the transaction fees.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 

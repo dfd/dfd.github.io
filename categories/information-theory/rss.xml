@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - Information Theory</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/categories/information-theory/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Mon, 15 Jul 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Book Review: Information Theory, Inference, and Learning Alogrithms</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Mon, 15 Jul 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Machine Learning]]></category>
+          <category><![CDATA[Statistics]]></category>
+          <category><![CDATA[Information Theory]]></category>
+          
+          
+          <category><![CDATA[book review]]></category>
+          
+          <link>https://dfd.github.io/mackay-itila/</link>
+          <guid>https://dfd.github.io/mackay-itila/</guid>
+          <description><![CDATA[Overview
+David MacKay's classic textbook Information Theory, Inference, and Learning Algorithms was first published in 2003, and yet it holds up very well over 20 years later, seamlessly weaving together concepts across compression, noisy-channel coding, Bayesian statistics, and …]]></description>
+          <content:encoded><![CDATA[<h2 id="overview">Overview</h2>
+<p>David MacKay's classic textbook <a rel="noopener nofollow noreferrer" target="_blank" href="http://www.inference.org.uk/mackay/itila/book.html">Information Theory, Inference, and Learning Algorithms</a> was first published in 2003, and yet it holds up very well over 20 years later, seamlessly weaving together concepts across compression, noisy-channel coding, Bayesian statistics, and neural networks.  By the end, a diligent reader will have a very good understanding of fundamentals that are vital to more advanced work in Bayesian statistics and deep learning.</p>
+<h2 id="a-unique-perspective">A unique perspective</h2>
+<p>MacKay uniquely presents the material, drawing parallels between seemingly distinct topics.  As he states in Chapter 2, &quot;One of the themes of this book is  that data compression and data modeling are one and the same, and that they should both be addressed... using inverse probability.&quot;</p>
+<p>One chapter presented a unique idea for model comparison using Occam's Razor.  He presents an &quot;Occam's Factor&quot; which &quot;provides the ratio of the poterior accessible volume of $\mathcal{H}_i$'s hypothesis space to the priori accessible volume, or the factor by which $\mathcal{H}_i$'s hypothesis space collapses when the data arrive.&quot;  It's logarithm &quot;is a measure of the amount of information we gain about the model's parameters when the data arrive.&quot;</p>
+<p>So models with many parameters and few constraints will be penalized by a stronger Occam's factor than a simpler model because they had too much &quot;wiggle room&quot; to overfit the data.  It's similar in spirit to AIC or BIC, except it can be applied to the full distributions over parameters, as opposed to just the maximium likelihood point estimation models.  Later he goes so far as to say it can be used as a substitute for validation sets in Bayesian machine learning.  I'm not sure I'm ready to commit to that, but I'm interested to explore it further.  It seemes like it could be gamed.  For instance, if you know of an overfit model and its parameter values for a set of training data, and you then set your priors to be equal to these, then the parameters wouldn't change and the Occam's Factor of that model would be small.  So this seems to be relying on restricting oneself to truly using priors before seeing the data.</p>
+<h2 id="diverse-topics">Diverse topics</h2>
+<p>As if the diversity of high level topics weren't enough, perhaps the most interesting sequence in the book are chapters 18 and 19.  He applies the tools from the Information Theory section first to crossword puzzles, and then presents a simplified version of the <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Cryptanalysis_of_the_Enigma">Enigma Code breaking done at Bletchley Park</a>.  Finally, he ends the section with an information theoretic point of view on the benefits of sexual reproduction with recombination using both analytical and simulation methods.</p>
+<h2 id="relevance-to-nlp-and-deep-learning">Relevance to NLP and deep learning</h2>
+<p>Even in Claude Shannon's original paper that introduced information theory, <a rel="noopener nofollow noreferrer" target="_blank" href="https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">A Mathemetical Theory of Communication</a>, he presented language models.  And if one studies natural language processing today, it's still filled with concepts from information theory.  Although this book came out 14 years before the transformer architecture was introduced in <a rel="noopener nofollow noreferrer" target="_blank" href="https://research.google/pubs/attention-is-all-you-need/">Attention is All You Need</a>, it will give readers an outstanding foundation from which to study modern approaches.  I worry too many practitioners just take the shortest path to the latest architectures without building the requisite knowledge first.</p>
+<p>I also like how he distills neural networks into their architecture, activity rule, and learning rule.  The architecture specifies the variables and relationships within the network; the activity rule details how the outputs of neurons change in response to each other; the learning rule defines how to update weights during training.</p>
+<p>One other topic I found particularly interesting was on the information capacity of a single neuron (and relating it back to VC dimension), as well as the capacity of Hopfield networks.  Walking through these analyses gives the reader building blocks for reasoning about the capacity of larger, more complex networks.</p>
+<p>While it's true that the Bayesian methods for which MacKay advocates are not the dominate paradigm used in deep learning today, the probabilistic perspective is broad enough to interpret parameters with point estimates.  Regularization and drop out also have Bayesian interpretations.</p>
+<h2 id="comparison-to-frequentist-methods">Comparison to frequentist methods</h2>
+<p>MacKay mostly focuses on presenting the material at hand, but occasionally contrasts to frequentist methods.  One example comes in Chapter 24, where he discusses the estimators for $\sigma$ in a Gaussian distribution.  As he states:</p>
+<p>Given data $D = \{x_n\}_{n=1}^N$, and 'estimator' of $\mu$ is</p>
+<p>$$
+\bar{x} \equiv \sum_{n=1}^N x_n / N,
+$$
+and two estimators of $\sigma$ are:
+$$
+\sigma_N = \sqrt{\frac{\sum_{n=1}^N (x_n - \bar{x})^2}{N}}
+\;\text{and}\;
+\sigma_{N-1} = \sqrt{\frac{\sum_{n=1}^N (x_n - \bar{x})^2}{N-1}}
+$$</p>
+<p>He discusses how they invent estimators in the frequentist paradigm and choose the one that best meets some criteria of sampling properties.  After pointing out that there is no clear principle for deciding which criterion to use, and given most criteria, there's no systematic way to produce an optimal estimator, he then explains the frequentist interpretation of these estimators.  The estimator $(\bar{x}, \sigma_N)$ is the maximum likelihood estimator, but $\sigma_N$ is biased.  That is, averaging over repeated sampling, $\sigma_N$ will not equal to $\sigma$.  The $\sigma_{N-1}$ version is unbiased.</p>
+<p>In contrast, the Bayesian view arrives at these quantities as maximum a posteriori estimates of $\sigma$ with different conditioning.  The maximum of $P(\sigma | D)$ is at $\sigma_{N-1}$ and the maximum of $P(\sigma | D, \mu = \bar{x})$ is $\sigma_N$, using uninformative priors.  In other words, $\sigma_{N-1}$ is when we are jointly estimating our uncertainty in $\mu$ and $\sigma_N$ is when we hold $\mu$ fixed at $\bar{x}$.  There are nice supporting visuals on page 321.</p>
+<p>One of the more lively and entertaining chapters is 37, <em>Bayesian Inference and Sampling Theory</em>.  In this short chapter, he offers very simple examples to demonstrate that frequentist methods calculate unhelpful quantities to the decision at hand or are sensitive to irrelevant information.</p>
+<h2 id="nitpick">Nitpick</h2>
+<p>Perhaps the one thing I didn't care for in the book was the early insistence on approximating $x!$ and ${n \choose x}$, which seemed like a bit of an unnecessary distraction.  This did not last long, however.</p>
+<h2 id="problems">Problems</h2>
+<p>The book offers a lot of problems, each with a difficulty rating between 1 and 3 next to it.  Some of the problems are quite challenging.  I recognized one problem as being a slight reframing of a <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/William_Lowell_Putnam_Mathematical_Competition">Putnam</a> A6 question, and it was only marked with a difficulty of 2.  Luckily, he also marked a small portion as recommended problems, and these problems were thoughtfully chosen to reinforce the content.</p>
+<h2 id="recommendation">Recommendation</h2>
+<p>Overall, I see this book as being a good one to read after Kevin Murphy's <a href="https://dfd.github.io/probabilistic-machine-learning/">Probabilistic Machine Learning</a>.  They draw from a similar perspective, but MacKay's goes deeper within what it covers.</p>
+<p>So my recommendation is to read the whole book, after PML, and do all of the recommended problems.  The book is comprised of 50 relatively short chapters.  I think readers could alternate between reading a chapter and then doing its recommended problems, and complete the book in 100 days without much problem.  Very motivated readers could probably finish in 50 days by reading a chapter and completing the problems each day.  Consider it a &quot;must read&quot; if you want to go deep into NLP.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 

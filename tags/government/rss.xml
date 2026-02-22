@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+    <channel>
+      <title>Implicit Assumptions - government</title>
+      <link>https://dfd.github.io</link>
+      <description>Dave Decker&#x27;s blog</description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://dfd.github.io/tags/government/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 20 Oct 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>A Solution to Gerrymandering: Virtual Districts</title>
+          <dc:creator><![CDATA[Dave]]>
+        </dc:creator>
+          <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
+          
+          <category><![CDATA[Political Science]]></category>
+          <category><![CDATA[Game Theory]]></category>
+          
+          
+          <category><![CDATA[voting]]></category>
+          <category><![CDATA[government]]></category>
+          
+          <link>https://dfd.github.io/virtual-districts/</link>
+          <guid>https://dfd.github.io/virtual-districts/</guid>
+          <description><![CDATA[Introduction
+First, let’s define it: gerrymandering is the manipulation of arbitrary geographic boundaries of voting districts by a dominant political party to increase its representation in government.  This happens all over the world, but I’ll focus my discussion on the United …]]></description>
+          <content:encoded><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>First, let’s define it: gerrymandering is the manipulation of arbitrary geographic boundaries of voting districts by a dominant political party to increase its representation in government.  This happens all over the world, but I’ll focus my discussion on the United States, as I’m most familiar with it.  <a rel="noopener nofollow noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Gerrymandering_in_the_United_States#Examples_of_gerrymandered_U.S._districts">Wikipedia provides some nice illustrative examples</a> of the issue, where we can see spiraling borders on Congressional districts to dilute the voters of a state’s minority party to help the majority party win more seats in Congress.  It’s a nice, visual example of politics at its worst: suppressing the voice of opponents.  The question is, what can be done about it?</p>
+<figure class="image">
+<img src="Maryland_US_Congressional_District_3.tif">
+  <!--<figcaption>Examples of gerrymandering Congressional districts in the US.</figcaption>
+</figure>
+<figure class="image">-->
+<img src="Illinois_District_4_2004.png">
+  <!--<figcaption>Examples of gerrymandering Congressional districts in the US.</figcaption>
+</figure>
+<figure class="image">-->
+  <img src="North_Carolina_12th_Congressional_District.gif">
+  <figcaption>Examples of gerrymandering Congressional districts in the US.</figcaption>
+</figure>
+<p>Even restrictions on the type of boundaries will not satisfactorily solve the problem.  Allowing fewer degrees of freedom helps, but even normal looking shapes <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.quantamagazine.org/how-math-has-changed-the-shape-of-gerrymandering-20230601/">still may be used to create heavily disproportional representation with modern computers</a>.  You could even end up with skewed representation by chance.  For instance, imagine making a rule that Congressional districts will be defined by only longitudinal lines and state borders, such that each district holds $1/k$ proportion of the state voting age population, where $k$ is the number of Congressional seats.  It could just so happen that due to the distribution of residents that this leads to disproportional representation of the state’s voters, even with no ill intent.</p>
+<h2 id="the-goal">The goal</h2>
+<p>Let’s define a goal and then devise a system that achieves that goal.  We’re going to make some simplifying assumptions to make this tractable.  Let’s suppose we are in a two party political system, and all voters are in those two parties.  Further, we are in a state with $k$ Congressional seats and $n$ voters with $m$ share in the minority party and $(1 - m)$ in the majority party.  Another constraint is that each district must represent roughly the same number of eligible voters (for simplicity, we’ll assume $k$ is a factor of $n$ and that each district will have $n/k$ voters).</p>
+<p>We want to devise a system in which no fewer than $\left\lfloor(k \times m) \right\rfloor$ Congressional seats are allocated to the minority party, assuming all voters vote along party lines.</p>
+<h2 id="virtual-districts">Virtual districts</h2>
+<p>A way out of this is to get rid of the arbitrary geographic borders and let the people self-organize.  So, do we just let voters sort themselves into $k$ virtual districts and call it a day?</p>
+<p>Well, no.  Suppose there are 1,000 voters, 400 of which are in the minority party, and 10 virtual districts.  It will require at least 51 out of 100 votes in a district to win a seat.  A well organized majority party could immediately place 60 voters in each virtual district and win all of them!  Zero is far fewer than our objective of at least 4 seats for the minority party in this case.  We need to solve an adversarial problem and assume that any system we propose will be exploited if possible.</p>
+<h2 id="the-solution">The solution</h2>
+<p>Here’s how we will avoid this sort of issue:</p>
+<p>Have two rounds of self-organization.  Start with $2 \times k$ virtual districts, each up to a limit of $n/k$ voters and which voters can voluntarily join.  After a deadline, eliminate the least populous $k$ virtual districts from the first round, and let each of the displaced voters join one of the remaining $k$ districts with available capacity in the second round.  Does this achieve our goal?</p>
+<p>First, let’s revisit the illustrative example from above.  Does the majority party have the ability to guarantee the minority party has less than 4 seats in that example?  No.  If they place 60 voters in each of 10 virtual districts in the first round, the minority party members have the freedom to move to other open districts (there would be 10 empty ones), and the majority party doesn’t have enough members to place over 50 members in each of the $2 \times k$ virtual districts, since that would require more than $2 \times 10 \times 50 = 1,000$ members (in fact, it would require at least 1,010 to avoid ties).  In other words, it would require more members than total voters to guarantee a majority in each of the first round virtual districts.  Meanwhile, the minority party could try to stack itself into 4 virtual districts with 100 each and guarantee victory in them.</p>
+<p>But would the majority party let them do that?  Let’s make some more assumptions before proceeding. First, let’s assume that voter virtual district choices can be centrally coordinated by the party.  Also, we’ll give the option to the majority party move first in each round, and each party can respond instantaneously to the other party’s moves.  In other words, we won’t allow a party to run out of time before the round 1 or round 2 deadlines to execute their strategy.  Finally, we’ll suppose that each voter’s party affiliation is visible, such that both parties know the party affiliation counts within each district.</p>
+<p>Let’s examine some possible strategies.  Suppose the majority party spreads themselves evenly across the districts.  This won’t help them: they would have 30 members in each of the 20 districts, while the minority party would stack up with 70 each in 5 districts and 50 in the 6th.  All of those districts would survive the first round (10 of the districts with only 30 voters from the majority party would be removed and need to reallocate), with the minority party able to win 5 seats and a tie for the 6th, earning overrepresentation.</p>
+<p>Let’s start again: suppose the majority party spreads themselves evenly with 30 in each of the 20 districts, and the minority party places themselves with 51 each in 7 districts and the remaining 43 in an 8th district.  Could the minority party win 7 districts this way if the majority party is allowed to respond?  No, because the majority party would see the minority party’s move and shift its voters out of those 7 districts and into 10 open districts with 60 members each, causing all the minority party districts to be cut after the first round, unless they reallocate further.  How could they reallocate to avoid this?  They could try reallocating to 6 districts with 61 members in each (and some members who would lose the 7th), but they know the majority party will react again.  Taken to its logical conclusion, the minority party would simply stuff 4 districts with 100 voters each to guarantee securing 4 virtual districts in the first round, while the majority will take the other 6, which is perfectly in line with their proportion.  The excess districts and mobility guarantee an inability to take more districts than a party’s proportion (to the precision of a rounded partial district).</p>
+<h2 id="endgame">Endgame</h2>
+<p>So what would happen?  A premise of game theory is that participants can reason through future moves and opponent responses.  In this case, having double the virtual districts in round one and facing reallocation of the lowest half of districts by population makes it impossible to suppress the other’s representation: the other side can always find enough space to take majority in at least $\left\lfloor(m \times k) \right\rfloor$ districts, so each side must be focused on not <em>losing</em> their fair share due to the culling of least populated districts.  The only way to guarantee at least $\left\lfloor (m \times k) \right \rfloor$ for the minority and $\left\lfloor((1 - m) \times k) \right\rfloor$ for the majority is for both sides to fill up as many districts as they can fully.</p>
+<p>We’ve created a 2-player, fixed-sum deterministic game of perfect information.  This <a rel="noopener nofollow noreferrer" target="_blank" href="https://www.youtube.com/watch?v=EqcSEKRtklE&amp;list=PLPhC147aCdDHQyAxcFYR1HSDtYlL0ARSI&amp;index=9">leads us to minimax strategies</a>, and the first round culling mechanism prevents one party from locking in more districts than their fair share.</p>
+<p>In some cases when the party membership does not evenly fill an integer number of districts, the minority party can achieve $\left\lceil (k \times m) \right\rceil$, but this depends on the specific numbers of the situation.  For instance, with 10 districts, 99 voters in the minority party and 901 in the majority party, the minority would place 99 in a district and the majority would place 99 voters in 9 districts and only have 10 left over for a 10th, which is not enough to cull the minority district after round 1.  One district is higher than $\left\lfloor(m \times k) \right\rfloor = 0$.   On the other hand, with 10 districts, 949 voters in the majority and 51 in the minority, the minority will put their 51 voters in a single district and the majority party can place at least 94 voters in 10 districts in round 1 to force a culling of the minority district.  In the general case, if there would be a split district, the majority will win the extra district if</p>
+<p>$$
+(1-m)n / \left\lceil (1-m)k \right\rceil &gt; (1-m)n / \left\lceil (m)k \right\rceil
+$$</p>
+<p>In other words, if the majority party has more voters per district while extending itself to capture the remaining district than the minority party does while trying to extend itself for the remaining district, it can avoid getting culled and win the district.  Vice versa for the minority party.  Any attempt at extending to grab extra districts by a party will result in a countermove to cull districts of the greedy party and they will have <em>less</em> than their fair share as a result.</p>
+<p>It should also work for any number of parties.  The key is having double the districts in round one such that, no matter a party’s majority or even a <em>coalition’s majority</em>, they can’t impose their will on any party with a sufficient number of voters.  If people just want to vote along party lines, they can always achieve at least $\left\lfloor (k \times p_i) \right\rfloor$ where $p_i$ is their proportion of the state’s voters.</p>
+<h2 id="realistic-assumptions">Realistic assumptions?</h2>
+<p>For the endgame to work out as desired, we had to make an assumption about perfect information to get minimax behavior.  This means that both parties knew what state they were in; in other words, they knew the number of voters from each party in each virtual district.  Today, we know they must have pretty good information about party affiliation, because they use it for effective gerrymandering.  The other assumption to make this work is that the party was centrally coordinating the voter movements of its members.  That also seems like a fine approximation; either the voters could have given the party permission to sign up for virtual districts, or they are given instructions centrally by the parties.  That’s not much of a stretch, considering how much the parties invest in campaign operations already.</p>
+<p>Perhaps the biggest disconnect from real life is the assumption of voter participation.  Not all eligible voters will participate in the process, so we would need to randomly assign voters who do not participate at the end, and this would also weaken a party’s ability to obtain its share of districts if its members are less active than the other’s.</p>
+<p>We could also expect parties to start engaging in deception with respect to party affiliation to violate the &quot;perfect information&quot; assumption.</p>
+<h2 id="even-better-in-practice">Even better in practice?</h2>
+<p>Above, we have assumed that voters just want to vote along party lines.  In practice it might lead to even richer coalitions and more accurate, issue-based representation.  One could imagine the moderate members of two parties forming a coalition to advance some shared goal in a virtual district.  For instance, imagine members of both parties join a district and agree that some small number of issues are their top concerns.  They announce that they will be voting for whichever candidate can best deliver on their top three concerns.  Eligible candidates who most closely line up with those goals would enter that race, and ones that do not would find better fits for them.</p>
+<p>If issue-based, cross-party coalitions form, then we may not be so worried about party representation.  But the $2 \times k$ districts still serve a useful purpose in round 1, in that it gives an opportunity for grassroots coalitions to form and to see which issues have enough support to warrant representation.  If a cause can’t gather enough voters, that’s a signal to them that their issues aren’t as important to others, and they can seek to join some other coalition with enough support that suits them.</p>
+<h2 id="continuity-between-elections">Continuity between elections</h2>
+<p>In repeated elections, it would make sense to start voters in their virtual districts from the previous election.  If a coalition is happy with their representative, they can have continuity.  But we would add another $k$ empty districts to start round 1 again.  So if members of some virtual districts are unhappy, they can disband and disburse to new virtual districts.  Plus, inevitably, a state will have residents who left or joined the state since the last election, so spots in existing districts will open up and new residents will have to be placed.</p>
+<h2 id="some-extreme-viewpoints">Some extreme viewpoints?</h2>
+<p>One consequence of virtual districts would be that larger states with more Congressional seats could lead to more extreme viewpoints.
+For instance, California has 52 seats, New York has 45, and Texas has 38.
+This means that it would take less than 3% of a state’s population to form a virtual district, and it’s more likely this would lead to what others would perceive as extreme viewpoints winning Congressional seats.  However, these extreme viewpoints would still be marginalized in the context of a large Congress.  So those people may be accurately represented, but they will be unlikely to move the needle on policy.</p>
+<h2 id="missing-the-original-purpose">Missing the original purpose?</h2>
+<p>Would we be missing the point of Congressional districts if we removed the locality of them?  An original intent of Congressional districts was to ensure that the people would have representatives familiar with their local concerns.  However, as can be seen by the extreme gerrymandering examples, some Congressional districts stretch the definition of local communities already.  Plus, not all people in a locality necessarily agree on federal policy anyway, and those who vote for the losing candidate probably don’t feel well represented.  And of course, nothing would stop a local community from trying to form a virtual district on their own anyway; the difference is that they would be drawing the boundary themselves, and it would be opt-in for voters.</p>
+<p>One drawback I can think of is when regional representation is more important than issue representation, like after natural disasters or accidents that the federal government can address.  In such cases, virtual districts may dilute regional representation even more than gerrymandering.</p>
+<h2 id="realistic-solution">Realistic solution?</h2>
+<p>Might this happen in real life?  Probably not, because the party in power of a state’s districts will not want to give up gerrymandering power, and it seems unlikely that the beneficiaries of gerrymandering in Congress will pass a federal law to ban it.  Also, there may be questions of whether such a scheme is too complex for some voters to navigate or understand.  But it's interesting to think of solutions that could work better in theory.  And if it had enough support behind it, who knows what might happen.</p>
+]]></content:encoded>
+      </item>
+    </channel>
+</rss> 
